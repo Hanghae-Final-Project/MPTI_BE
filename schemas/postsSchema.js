@@ -25,6 +25,9 @@ const PostSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  countLikes: {
+    type: Number,
+  },
   userId: {
     type: Schema.Types.ObjectId,
   },

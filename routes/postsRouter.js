@@ -3,10 +3,12 @@ const authMiddleware = require('../middlewares/auth-middleware');
 const Comment = require('../schemas/commentsSchema');
 const User = require('../schemas/usersSchema');
 const Post = require('../schemas/postsSchema');
+const Like = require('../schemas/likeSchemas');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
 const s3 = new aws.S3();
+
 
 const upload = multer({
   storage: multerS3({
@@ -18,12 +20,6 @@ const upload = multer({
     },
   }),
 });
-
-// aws.config.update({
-//   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-//   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-//   region: 'ap-northeast-2',
-// });
 
 // Post 전체 정보 불러오기
 router.get('/postList', async (req, res) => {
@@ -66,8 +62,12 @@ router.post(
   async (req, res) => {
     try {
       const { userId } = res.locals.user;
+<<<<<<< Updated upstream
 
       const { postTitle, postCategory, postContent } = req.body;
+=======
+      const { postCategory, postContent } = req.body;
+>>>>>>> Stashed changes
 
       const imageReq = req.files;
       let imageArray = [];
@@ -81,6 +81,8 @@ router.post(
 
       const createdAt = new Date().toLocaleDateString('ko-KR');
 
+      let countLikes =0;
+
       const createPost = await Post.create({
         postTitle,
         postCategory,
@@ -88,6 +90,7 @@ router.post(
         createdAt,
         postContent,
         userId,
+        countLikes,
       });
 
       res.status(200).json({ Posts: createPost, message: 'Post 생성 성공.' });
@@ -175,10 +178,10 @@ router.post('/likes/:postId', authMiddleware, async (req, res) => {
       .json({ errorMessage: '이미 좋아요 되어있는 상태입니다.' });
   } else {
     await Like.create({ userId, postId });
-    const existLikes = await Comment.findOne({ postId: postId });
+    const existLikes = await Post.findOne({ postId: postId });
     if (existLikes) {
       const countLikes = existLikes.countLikes + 1;
-      await Comment.updateOne({ postId: postId }, { $set: { countLikes } });
+      await Post.updateOne({ postId: postId }, { $set: { countLikes } });
     }
   }
   res.status(201).json({ message: '좋아요 추가 되었습니다.' });
@@ -195,10 +198,10 @@ router.delete('/likes/:postId', authMiddleware, async (req, res) => {
       .json({ errorMessage: '이미 좋아요 되어있지 않은 상태입니다.' });
   } else {
     await Like.deleteOne({ userId, postId });
-    const existLikes = await Comment.findOne({ postId: postId });
+    const existLikes = await Post.findOne({ postId: postId });
     if (existLikes) {
       const countLikes = existLikes.countLikes - 1;
-      await Comment.updateOne({ postId: postId }, { $set: { countLikes } });
+      await Post.updateOne({ postId: postId }, { $set: { countLikes } });
     }
   }
   res.status(201).json({ message: '좋아요 취소 되었습니다.' });
@@ -214,9 +217,8 @@ router.get('/likes/:postId', authMiddleware, async (req, res) => {
 // 특정 글에 대한 좋아요가 몇 개인지만 보여주는 API
 router.get('/like/:postId', authMiddleware, async (req, res) => {
   const { postId } = req.params;
-  const comment = await Comment.findOne({ postId: Number(postId) });
-  const likes = comment['likes'];
-
+  // const comment = await Comment.findOne({ postId: Number(postId) });
+  const likes = post['likes'];
   res.json({
     likes,
   });
