@@ -6,9 +6,6 @@ const PostSchema = new mongoose.Schema({
   postId: {
     type: Number,
   },
-  postTitle: {
-    type: String,
-  },
   postContent: {
     type: String,
   },

@@ -67,7 +67,7 @@ router.post(
     try {
       const { userId } = res.locals.user;
 
-      const { postTitle, postCategory, postContent } = req.body;
+      const { postCategory, postContent } = req.body;
 
       const imageReq = req.files;
       let imageArray = [];
@@ -82,7 +82,6 @@ router.post(
       const createdAt = new Date().toLocaleDateString('ko-KR');
 
       const createPost = await Post.create({
-        postTitle,
         postCategory,
         postImage,
         createdAt,
@@ -109,7 +108,7 @@ router.put(
   async (req, res) => {
     const { postId } = req.params;
     const { userId } = res.locals.user;
-    const { postTitle, postCategory, postContent } = req.body;
+    const { postCategory, postContent } = req.body;
 
     const imageReq = req.files;
     let imageArray = [];
@@ -130,7 +129,6 @@ router.put(
         { postId: parseInt(postId) },
         {
           $set: {
-            postTitle,
             postCategory,
             postImage,
             postContent,
