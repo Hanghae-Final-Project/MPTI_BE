@@ -17,8 +17,11 @@ const upload = multer({
     s3: s3,
     bucket: 'seohobucket',
     acl: 'public-read',
+    contentType: function (req, file, cb) {
+      cb(null, file.mimetype);
+    },
     key: function (req, file, cb) {
-      cb(null, Date.now() + '.' + file.originalname.split('.').pop()); // 이름 설정
+      cb(null, Date.now() + '.' + file.originalname); // 이름 설정
     },
   }),
 });
@@ -207,6 +210,7 @@ router.put(
     const { nickname, gender, birthday, mbti, introduction } = req.body;
 
     const imageReq = req.files;
+    console.log(imageReq);
     let imageArray = [];
     function locationPusher() {
       for (let i = 0; i < imageReq.length; i++) {
