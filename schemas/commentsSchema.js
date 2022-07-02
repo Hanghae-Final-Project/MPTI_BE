@@ -18,6 +18,12 @@ const CommentSchema = new mongoose.Schema({
   userId: {
     type: Schema.Types.ObjectId,
   },
+  nickname: {
+    type: String,
+  },
+  userImage: {
+    type: Array,
+  },
 });
 
 CommentSchema.plugin(AutoIncrement, { inc_field: 'commentId' });

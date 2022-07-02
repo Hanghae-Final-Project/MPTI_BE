@@ -68,7 +68,8 @@ router.post(
   upload.array('postImage'),
   async (req, res) => {
     try {
-      const { userId } = res.locals.user;
+      console.log(res.locals.user);
+      const { userId, nickname, userImage } = res.locals.user;
 
       const { postCategory, postContent } = req.body;
 
@@ -90,6 +91,8 @@ router.post(
         createdAt,
         postContent,
         userId,
+        nickname,
+        userImage,
       });
 
       res.status(200).json({ Posts: createPost, message: 'Post 생성 성공.' });
