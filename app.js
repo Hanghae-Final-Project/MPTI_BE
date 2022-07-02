@@ -3,16 +3,19 @@ const cors = require('cors');
 const app = express();
 require('dotenv').config;
 const connect = require('./schemas');
-
+const kakaoRouter = require('./routes/usersRouter');
+const passportConfig = require('./passport');
 app.use(cors({ origin: true, credentials: true }));
 
 connect();
+passportConfig();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use('/api/comments', require('./routes/commentsRouter.js'));
 app.use('/api/posts', require('./routes/postsRouter.js'));
 app.use('/api', require('./routes/usersRouter'));
 app.use('/api', require('./routes/mypageRouter.js'));
+app.use('/api/kakao', kakaoRouter);
 
 app.use((req, res, next) => {
   console.log('Request URL:', req.originalUrl, ' - ', new Date());

@@ -10,6 +10,7 @@ const authMiddleware = require('../middlewares/auth-middleware');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
+const passport = require('passport');
 const s3 = new aws.S3();
 
 const upload = multer({
@@ -44,7 +45,7 @@ router.post('/signup', async (req, res) => {
       // birthday,
       // gender,
       // } = await postUsersSchema.validateAsync(req.body);
-    } = await req.body;
+    } =  req.body;
     if (password !== passwordCheck) {
       res.status(400).send({
         errorMessage: '패스워드가 불일치합니다.',
@@ -254,6 +255,15 @@ router.put(
     }
   }
 );
+
+//소셜 로그인 카카오 구현
+router.get('/', passport.authenticate('kakao'));
+
+router.get('/callback', passport.authenticate('kakao', {
+  failureRedirect: '/',
+}), (req, res) => {
+  res.redirect('/');
+});
 
 // <---유저정보조회(토큰 내용 확인) API-->
 router.get('/auth', authMiddleware, async (req, res) => {
