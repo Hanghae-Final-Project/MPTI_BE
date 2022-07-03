@@ -42,7 +42,9 @@ const UserSchema = new mongoose.Schema({
   point: {
     type: Number,
   },
-  likes: [], 
+  likes: {
+    type: Array,
+  }, 
 });
 
 UserSchema.virtual('userId').get(function () {

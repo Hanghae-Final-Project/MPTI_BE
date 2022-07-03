@@ -68,6 +68,7 @@ router.post(
 =======
       const { postCategory, postContent } = req.body;
 >>>>>>> Stashed changes
+      const {postCategory, postContent } = req.body;
 
       const imageReq = req.files;
       let imageArray = [];
@@ -84,7 +85,6 @@ router.post(
       let countLikes =0;
 
       const createPost = await Post.create({
-        postTitle,
         postCategory,
         postImage,
         createdAt,
@@ -210,18 +210,10 @@ router.delete('/likes/:postId', authMiddleware, async (req, res) => {
 router.get('/likes/:postId', authMiddleware, async (req, res) => {
   const { postId } = req.params;
   const existLikeUsers = await Like.find({ postId });
+  const existLikes = await Post.findOne({ postId: postId });
+  const countLikes = existLikes.countLikes;
   const likeUsers = existLikeUsers.map((item) => item.userId);
-  res.json({ likeUsers });
-});
-// <---좋아요 개수 API-->
-// 특정 글에 대한 좋아요가 몇 개인지만 보여주는 API
-router.get('/like/:postId', authMiddleware, async (req, res) => {
-  const { postId } = req.params;
-  // const comment = await Comment.findOne({ postId: Number(postId) });
-  const likes = post['likes'];
-  res.json({
-    likes,
-  });
+  res.json({ likeUsers ,countLikes});
 });
 
 module.exports = router;
