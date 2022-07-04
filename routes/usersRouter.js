@@ -204,28 +204,28 @@ router.post('/login', async (req, res) => {
 router.put(
   '/signup/first',
   authMiddleware,
-  upload.array('userImage'),
+  // upload.array('userImage'),
   async (req, res) => {
     console.log(req.body);
     const email = res.locals.user.email;
     const { nickname, gender, birthday, mbti, introduction } = req.body;
 
-    const imageReq = req.files;
-    console.log(imageReq);
-    let imageArray = [];
-    function locationPusher() {
-      for (let i = 0; i < imageReq.length; i++) {
-        imageArray.push(imageReq[i].location);
-      }
-      return imageArray;
-    }
-    const userImage = locationPusher();
+    // const imageReq = req.files;
+    // console.log(imageReq);
+    // let imageArray = [];
+    // function locationPusher() {
+    //   for (let i = 0; i < imageReq.length; i++) {
+    //     imageArray.push(imageReq[i].location);
+    //   }
+    //   return imageArray;
+    // }
+    // const userImage = locationPusher();
 
-    const existEmail = await User.findOne({ email });
-    console.log(userImage);
+    // const existEmail = await User.findOne({ email });
+    // console.log(userImage);
 
     if (
-      !userImage ||
+      // !userImage ||
       !nickname ||
       !gender ||
       !birthday ||
@@ -242,7 +242,7 @@ router.put(
         { email },
         {
           $set: {
-            userImage,
+            // userImage,
             nickname,
             gender,
             birthday,
