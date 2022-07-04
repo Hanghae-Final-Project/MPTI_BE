@@ -31,6 +31,15 @@ const PostSchema = new mongoose.Schema({
   userId: {
     type: Schema.Types.ObjectId,
   },
+  nickname: {
+    type: String,
+  },
+  userImage: {
+    type: Array,
+  },
+  countLikes: {
+    type: Number,
+  },
 });
 
 PostSchema.plugin(AutoIncrement, { inc_field: 'postId' });

@@ -62,12 +62,6 @@ router.post(
   async (req, res) => {
     try {
       const { userId } = res.locals.user;
-<<<<<<< Updated upstream
-
-      const { postTitle, postCategory, postContent } = req.body;
-=======
-      const { postCategory, postContent } = req.body;
->>>>>>> Stashed changes
       const {postCategory, postContent } = req.body;
 
       const imageReq = req.files;
