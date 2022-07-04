@@ -8,7 +8,7 @@ const authMiddleware = require('../middlewares/auth-middleware');
 
 router.post('/:postId', authMiddleware, async (req, res) => {
   const { postId } = req.params;
-  const { userId } = res.locals.user;
+  const { userId, nickname, userImage } = res.locals.user;
   const { comment } = req.body;
 
   const createdAt = new Date().toLocaleDateString('ko-KR');
@@ -22,6 +22,8 @@ router.post('/:postId', authMiddleware, async (req, res) => {
       comment,
       createdAt,
       userId,
+      nickname,
+      userImage,
       postId,
     });
     const commentCount = await Comment.find({ postId: parseInt(postId) });
