@@ -5,6 +5,7 @@ require('dotenv').config;
 const connect = require('./schemas');
 const kakaoRouter = require('./routes/usersRouter');
 const passportConfig = require('./passport');
+const session = require('express-session');
 app.use(cors({ origin: true, credentials: true }));
 
 connect();
@@ -16,6 +17,9 @@ app.use('/api/posts', require('./routes/postsRouter.js'));
 app.use('/api', require('./routes/usersRouter'));
 app.use('/api', require('./routes/mypageRouter.js'));
 app.use('/api/kakao', kakaoRouter);
+app.use(session({ }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use((req, res, next) => {
   console.log('Request URL:', req.originalUrl, ' - ', new Date());
