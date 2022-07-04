@@ -15,8 +15,11 @@ const upload = multer({
     s3: s3,
     bucket: 'seohobucket',
     acl: 'public-read',
+    contentType: function (req, file, cb) {
+      cb(null, file.mimetype);
+    },
     key: function (req, file, cb) {
-      cb(null, Date.now() + '.' + file.originalname.split('.').pop()); // 이름 설정
+      cb(null, Date.now() + '.' + file.originalname); // 이름 설정
     },
   }),
 });
@@ -61,8 +64,9 @@ router.post(
   upload.array('postImage'),
   async (req, res) => {
     try {
-      const { userId } = res.locals.user;
-      const {postCategory, postContent } = req.body;
+      console.log(res.locals.user);
+      const { userId, nickname, userImage } = res.locals.user;
+      const { postCategory, postContent } = req.body;
 
       const imageReq = req.files;
       let imageArray = [];
@@ -85,6 +89,8 @@ router.post(
         postContent,
         userId,
         countLikes,
+        nickname,
+        userImage,
       });
 
       res.status(200).json({ Posts: createPost, message: 'Post 생성 성공.' });
@@ -106,7 +112,7 @@ router.put(
   async (req, res) => {
     const { postId } = req.params;
     const { userId } = res.locals.user;
-    const { postTitle, postCategory, postContent } = req.body;
+    const { postCategory, postContent } = req.body;
 
     const imageReq = req.files;
     let imageArray = [];
@@ -127,7 +133,6 @@ router.put(
         { postId: parseInt(postId) },
         {
           $set: {
-            postTitle,
             postCategory,
             postImage,
             postContent,

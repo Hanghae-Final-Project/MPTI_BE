@@ -48,9 +48,6 @@ const UserSchema = new mongoose.Schema({
   snsId : {
     type: String,
   },
-  likes:{
-    type:Array,
-  }
 });
 
 UserSchema.virtual('userId').get(function () {
