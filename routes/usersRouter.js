@@ -221,7 +221,7 @@ router.put(
     // }
     // const userImage = locationPusher();
 
-    // const existEmail = await User.findOne({ email });
+    const existEmail = await User.findOne({ email });
     // console.log(userImage);
 
     if (
