@@ -3,12 +3,11 @@ const authMiddleware = require('../middlewares/auth-middleware');
 const Comment = require('../schemas/commentsSchema');
 const User = require('../schemas/usersSchema');
 const Post = require('../schemas/postsSchema');
-const Like = require('../schemas/likeSchemas');
+const Like = require('../schemas/likesSchema');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
 const s3 = new aws.S3();
-
 
 const upload = multer({
   storage: multerS3({
@@ -80,7 +79,7 @@ router.post(
 
       const createdAt = new Date().toLocaleDateString('ko-KR');
 
-      let countLikes =0;
+      let countLikes = 0;
 
       const createPost = await Post.create({
         postCategory,
@@ -212,7 +211,7 @@ router.get('/likes/:postId', authMiddleware, async (req, res) => {
   const existLikes = await Post.findOne({ postId: postId });
   const countLikes = existLikes.countLikes;
   const likeUsers = existLikeUsers.map((item) => item.userId);
-  res.json({ likeUsers ,countLikes});
+  res.json({ likeUsers, countLikes });
 });
 
 module.exports = router;
