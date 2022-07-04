@@ -42,9 +42,12 @@ const UserSchema = new mongoose.Schema({
   point: {
     type: Number,
   },
+  likes: {
+    type: Array,
+  }, 
   snsId : {
     type: String,
-  }
+  },
 });
 
 UserSchema.virtual('userId').get(function () {
