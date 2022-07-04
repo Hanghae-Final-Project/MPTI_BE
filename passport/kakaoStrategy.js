@@ -1,18 +1,8 @@
-const express = require('express');
-const app = express();
 const passport = require('passport');
 const KakaoStrategy = require('passport-kakao').Strategy;
-const session = require('express-session');
+
 const User = require('../schemas/usersSchema');
-app.use(
-  session({
-    secret: 'mpti',
-    resave: true,
-    saveUninitialized: true,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
+
 module.exports = () => {
   passport.use(
     new KakaoStrategy(

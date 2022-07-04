@@ -10,6 +10,7 @@ const session = require('express-session');
 app.use(cors({ origin: true, credentials: true }));
 
 connect();
+passportConfig();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use('/api/comments', require('./routes/commentsRouter.js'));
@@ -26,7 +27,6 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-passportConfig();
 
 app.use((req, res, next) => {
   console.log('Request URL:', req.originalUrl, ' - ', new Date());
