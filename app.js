@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const cors = require('cors');
 const app = express();
 require('dotenv').config;
@@ -8,6 +9,7 @@ const passport = require('passport');
 const passportConfig = require('./passport');
 const session = require('express-session');
 app.use(cors({ origin: true, credentials: true }));
+app.use(helmet({ contentSecurityPolicy: false }));
 
 connect();
 passportConfig();
