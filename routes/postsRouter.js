@@ -36,26 +36,30 @@ router.get('/postList', async (req, res) => {
 });
 
 // Post 상세 보기
-router.get('/:postId', authMiddleware, async (req, res) => {
-  try {
-    const { postId } = req.params;
-    const posts = await Post.findOne({ postId: parseInt(postId) });
-    const existingComment = await Comment.find({
-      postId: parseInt(postId),
-    }).sort({ postId: -1 });
+router.get(
+  '/:postId',
+  // authMiddleware,
+  async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const posts = await Post.findOne({ postId: parseInt(postId) });
+      const existingComment = await Comment.find({
+        postId: parseInt(postId),
+      }).sort({ postId: -1 });
 
-    res.status(200).json({
-      posts,
-      existingComment,
-      message: '상세페이지 보기 성공',
-    });
-  } catch (err) {
-    res.status(400).json({
-      errorMessage: '상세페이지 보기 실패',
-    });
-    console.log('Post 상세페이지 보기 실패: ' + err);
+      res.status(200).json({
+        posts,
+        existingComment,
+        message: '상세페이지 보기 성공',
+      });
+    } catch (err) {
+      res.status(400).json({
+        errorMessage: '상세페이지 보기 실패',
+      });
+      console.log('Post 상세페이지 보기 실패: ' + err);
+    }
   }
-});
+);
 //Post 작성
 router.post(
   '/',
