@@ -190,8 +190,12 @@ router.post('/login', async (req, res) => {
         expiresIn: '120m',
       }
     );
-    res.send({
+    res.status(200).send({
       token,
+      user: {
+        userId: user.userId,
+        nickname: user.nickname,
+      },
     });
   } catch (err) {
     console.log(err);
@@ -281,6 +285,7 @@ router.get('/auth', authMiddleware, async (req, res) => {
   res.status(200).send({
     user: {
       userId: user.userId,
+      nickname: user.nickname,
     },
   });
 });
