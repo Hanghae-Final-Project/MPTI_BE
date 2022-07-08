@@ -195,6 +195,7 @@ router.post('/login', async (req, res) => {
       user: {
         userId: user.userId,
         nickname: user.nickname,
+        userNum: user.userNum,
       },
     });
   } catch (err) {
@@ -286,6 +287,7 @@ router.get('/auth', authMiddleware, async (req, res) => {
     user: {
       userId: user.userId,
       nickname: user.nickname,
+      userNum: user.userNum,
     },
   });
 });
