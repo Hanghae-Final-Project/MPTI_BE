@@ -209,13 +209,18 @@ router.delete('/likes/:postId', authMiddleware, async (req, res) => {
   res.status(201).json({ message: '좋아요 취소 되었습니다.' });
 });
 
-router.get('/likes/:postId', authMiddleware, async (req, res) => {
-  const { postId } = req.params;
-  const existLikeUsers = await Like.find({ postId });
-  const existLikes = await Post.findOne({ postId: postId });
-  const countLikes = existLikes.countLikes;
-  const likeUsers = existLikeUsers.map((item) => item.userId);
-  res.json({ likeUsers, countLikes });
-});
+// 좋아요 조회기능
+router.get(
+  '/likes/:postId',
+  //  authMiddleware,
+  async (req, res) => {
+    const { postId } = req.params;
+    const existLikeUsers = await Like.find({ postId });
+    const existLikes = await Post.findOne({ postId: postId });
+    const countLikes = existLikes.countLikes;
+    const likeUsers = existLikeUsers.map((item) => item.userId);
+    res.json({ likeUsers, countLikes });
+  }
+);
 
 module.exports = router;
