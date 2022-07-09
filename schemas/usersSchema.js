@@ -38,14 +38,16 @@ const UserSchema = new mongoose.Schema({
   },
   mannerScore: {
     type: Number,
+    default: 0,
   },
   point: {
     type: Number,
+    default: 0,
   },
   likes: {
     type: Array,
-  }, 
-  snsId : {
+  },
+  snsId: {
     type: String,
   },
 });
