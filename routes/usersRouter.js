@@ -268,122 +268,87 @@ router.put(
 router.get('/suggest', authMiddleware, async (req, res) => {
   const { mbti } = res.locals.user; // 로그인한 유저의 mbti
 
+  // 재사용을 위해 유저정보 찾는 과정 함수화
   let user = []; // 전역 변수 선언
 
-  // let lookingFor = [];
+  let lookingFor = [];
 
-  // async function suggest(...args) {
-  //   for (let i = 0; i < args.length; i++) {
-  //     lookingFor.push({ mbti: args[i] });
-  //   }
-  //   user = await User.find({
-  //     $or: lookingFor,
-  //   });
-  //   console.log(lookingFor);
-  //   console.log(user);
-  //   return user;
-  // }
+  // 매개변수의 갯수를 알 수 없으므로 rest 파라미터 사용
+  async function suggest(...args) {
+    for (let i = 0; i < args.length; i++) {
+      lookingFor.push({ mbti: args[i] });
+    }
+    return (user = await User.find({
+      $or: lookingFor,
+    }));
+  }
 
+  // 로그인한 유저의 mbti를 매개변수로 받는 switch 문 (case 16개)
   switch (mbti) {
     case 'INFP':
-      // suggest('ENFJ', 'ENTJ');
-      user = await User.find({
-        $or: [{ mbti: 'ENFJ' }, { mbti: 'ENTJ' }],
-      });
+      user = await suggest('ENFJ', 'ENTJ');
       break;
+
     case 'ENFP':
-      // suggest('INFJ', 'INTJ');
-      user = await User.find({
-        $or: [{ mbti: 'INFJ' }, { mbti: 'INTJ' }],
-      });
+      user = await suggest('INFJ', 'INTJ');
       break;
+
     case 'INFJ':
-      // suggest('ENFP', 'ENTP');
-      user = await User.find({
-        $or: [{ mbti: 'ENFP' }, { mbti: 'ENTP' }],
-      });
+      user = await suggest('ENFP', 'ENTP');
       break;
+
     case 'ENFJ':
-      // suggest('INFP', 'ISFP');
-      user = await User.find({
-        $or: [{ mbti: 'INFP' }, { mbti: 'ISFP' }],
-      });
+      user = await suggest('INFP', 'ISFP');
       break;
+
     case 'INTJ':
-      // suggest('ENFP', 'ENTP');
-      user = await User.find({
-        $or: [{ mbti: 'ENFP' }, { mbti: 'ENTP' }],
-      });
+      user = await suggest('ENFP', 'ENTP');
       break;
+
     case 'ENTJ':
-      // suggest('INFP', 'INTP');
-      user = await User.find({
-        $or: [{ mbti: 'INFP' }, { mbti: 'INTP' }],
-      });
+      user = await suggest('INFP', 'INTP');
       break;
+
     case 'INTP':
-      // suggest('ENTJ', 'ESTJ');
-      user = await User.find({
-        $or: [{ mbti: 'ENTJ' }, { mbti: 'ESTJ' }],
-      });
+      user = await suggest('ENTJ', 'ESTJ');
       break;
+
     case 'ENTP':
-      // suggest('INFJ', 'INTJ');
-      user = await User.find({
-        $or: [{ mbti: 'INFJ' }, { mbti: 'INTJ' }],
-      });
+      user = await suggest('INFJ', 'INTJ');
       break;
+
     case 'ISFP':
-      // suggest('ENFJ', 'ESFJ', 'ESTJ');
-      user = await User.find({
-        $or: [{ mbti: 'ENFJ' }, { mbti: 'ESFJ' }, { mbti: 'ESTJ' }],
-      });
+      user = await suggest('ENFJ', 'ESFJ', 'ESTJ');
       break;
+
     case 'ESFP':
-      // suggest('ISFJ', 'ISTJ');
-      user = await User.find({
-        $or: [{ mbti: 'ISFJ' }, { mbti: 'ISTJ' }],
-      });
+      user = await suggest('ISFJ', 'ISTJ');
       break;
+
     case 'ISTP':
-      // suggest('ESFJ', 'ESTJ');
-      user = await User.find({
-        $or: [{ mbti: 'ESFJ' }, { mbti: 'ESTJ' }],
-      });
+      user = await suggest('ESFJ', 'ESTJ');
       break;
+
     case 'ESTP':
-      // suggest('ISFJ');
-      user = await User.find({
-        $or: [{ mbti: 'ISFJ' }],
-      });
+      user = await suggest('ISFJ');
       break;
+
     case 'ISFJ':
-      // suggest('ESFP', 'ESTP');
-      user = await User.find({
-        $or: [{ mbti: 'ESFP' }, { mbti: 'ESTP' }],
-      });
+      user = await suggest('ESFP', 'ESTP');
       break;
+
     case 'ESFJ':
-      // suggest('ISFP', 'ISTP');
-      user = await User.find({
-        $or: [{ mbti: 'ISFP' }, { mbti: 'ISTP' }],
-      });
+      user = await suggest('ISFP', 'ISTP');
       break;
+
     case 'ISTJ':
-      // suggest('ESFP');
-      user = await User.find({
-        $or: [{ mbti: 'ESFP' }],
-      });
+      user = await suggest('ESFP');
       break;
+
     case 'ESTJ':
-      // suggest('INTP', 'ISFP', 'ISTP');
-      user = await User.find({
-        $or: [{ mbti: 'INTP' }, { mbti: 'ISFP' }, { mbti: 'ISTP' }],
-      });
+      user = await suggest('INTP', 'ISFP', 'ISTP');
       break;
   }
-  // console.log(user);
-  // console.log(lookingFor);
   res.status(200).json({ success: true, user });
 });
 
