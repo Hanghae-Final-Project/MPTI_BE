@@ -265,6 +265,128 @@ router.put(
   }
 );
 
+router.get('/suggest', authMiddleware, async (req, res) => {
+  const { mbti } = res.locals.user; // 로그인한 유저의 mbti
+
+  let user = []; // 전역 변수 선언
+
+  // let lookingFor = [];
+
+  // async function suggest(...args) {
+  //   for (let i = 0; i < args.length; i++) {
+  //     lookingFor.push({ mbti: args[i] });
+  //   }
+  //   user = await User.find({
+  //     $or: lookingFor,
+  //   });
+  //   console.log(lookingFor);
+  //   console.log(user);
+  //   return user;
+  // }
+
+  switch (mbti) {
+    case 'INFP':
+      // suggest('ENFJ', 'ENTJ');
+      user = await User.find({
+        $or: [{ mbti: 'ENFJ' }, { mbti: 'ENTJ' }],
+      });
+      break;
+    case 'ENFP':
+      // suggest('INFJ', 'INTJ');
+      user = await User.find({
+        $or: [{ mbti: 'INFJ' }, { mbti: 'INTJ' }],
+      });
+      break;
+    case 'INFJ':
+      // suggest('ENFP', 'ENTP');
+      user = await User.find({
+        $or: [{ mbti: 'ENFP' }, { mbti: 'ENTP' }],
+      });
+      break;
+    case 'ENFJ':
+      // suggest('INFP', 'ISFP');
+      user = await User.find({
+        $or: [{ mbti: 'INFP' }, { mbti: 'ISFP' }],
+      });
+      break;
+    case 'INTJ':
+      // suggest('ENFP', 'ENTP');
+      user = await User.find({
+        $or: [{ mbti: 'ENFP' }, { mbti: 'ENTP' }],
+      });
+      break;
+    case 'ENTJ':
+      // suggest('INFP', 'INTP');
+      user = await User.find({
+        $or: [{ mbti: 'INFP' }, { mbti: 'INTP' }],
+      });
+      break;
+    case 'INTP':
+      // suggest('ENTJ', 'ESTJ');
+      user = await User.find({
+        $or: [{ mbti: 'ENTJ' }, { mbti: 'ESTJ' }],
+      });
+      break;
+    case 'ENTP':
+      // suggest('INFJ', 'INTJ');
+      user = await User.find({
+        $or: [{ mbti: 'INFJ' }, { mbti: 'INTJ' }],
+      });
+      break;
+    case 'ISFP':
+      // suggest('ENFJ', 'ESFJ', 'ESTJ');
+      user = await User.find({
+        $or: [{ mbti: 'ENFJ' }, { mbti: 'ESFJ' }, { mbti: 'ESTJ' }],
+      });
+      break;
+    case 'ESFP':
+      // suggest('ISFJ', 'ISTJ');
+      user = await User.find({
+        $or: [{ mbti: 'ISFJ' }, { mbti: 'ISTJ' }],
+      });
+      break;
+    case 'ISTP':
+      // suggest('ESFJ', 'ESTJ');
+      user = await User.find({
+        $or: [{ mbti: 'ESFJ' }, { mbti: 'ESTJ' }],
+      });
+      break;
+    case 'ESTP':
+      // suggest('ISFJ');
+      user = await User.find({
+        $or: [{ mbti: 'ISFJ' }],
+      });
+      break;
+    case 'ISFJ':
+      // suggest('ESFP', 'ESTP');
+      user = await User.find({
+        $or: [{ mbti: 'ESFP' }, { mbti: 'ESTP' }],
+      });
+      break;
+    case 'ESFJ':
+      // suggest('ISFP', 'ISTP');
+      user = await User.find({
+        $or: [{ mbti: 'ISFP' }, { mbti: 'ISTP' }],
+      });
+      break;
+    case 'ISTJ':
+      // suggest('ESFP');
+      user = await User.find({
+        $or: [{ mbti: 'ESFP' }],
+      });
+      break;
+    case 'ESTJ':
+      // suggest('INTP', 'ISFP', 'ISTP');
+      user = await User.find({
+        $or: [{ mbti: 'INTP' }, { mbti: 'ISFP' }, { mbti: 'ISTP' }],
+      });
+      break;
+  }
+  // console.log(user);
+  // console.log(lookingFor);
+  res.status(200).json({ success: true, user });
+});
+
 //소셜 로그인 카카오 구현
 router.get('/', passport.authenticate('kakao'));
 
