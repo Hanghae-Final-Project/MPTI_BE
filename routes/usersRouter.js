@@ -286,69 +286,70 @@ router.get('/suggest', authMiddleware, async (req, res) => {
   // 로그인한 유저의 mbti를 매개변수로 받는 switch 문 (case 16개)
   switch (mbti) {
     case 'INFP':
-      user = await suggest('ENFJ', 'ENTJ');
+      await suggest('ENFJ', 'ENTJ');
       break;
 
     case 'ENFP':
-      user = await suggest('INFJ', 'INTJ');
+      await suggest('INFJ', 'INTJ');
       break;
 
     case 'INFJ':
-      user = await suggest('ENFP', 'ENTP');
+      await suggest('ENFP', 'ENTP');
       break;
 
     case 'ENFJ':
-      user = await suggest('INFP', 'ISFP');
+      await suggest('INFP', 'ISFP');
       break;
 
     case 'INTJ':
-      user = await suggest('ENFP', 'ENTP');
+      await suggest('ENFP', 'ENTP');
       break;
 
     case 'ENTJ':
-      user = await suggest('INFP', 'INTP');
+      await suggest('INFP', 'INTP');
       break;
 
     case 'INTP':
-      user = await suggest('ENTJ', 'ESTJ');
+      await suggest('ENTJ', 'ESTJ');
       break;
 
     case 'ENTP':
-      user = await suggest('INFJ', 'INTJ');
+      await suggest('INFJ', 'INTJ');
       break;
 
     case 'ISFP':
-      user = await suggest('ENFJ', 'ESFJ', 'ESTJ');
+      await suggest('ENFJ', 'ESFJ', 'ESTJ');
       break;
 
     case 'ESFP':
-      user = await suggest('ISFJ', 'ISTJ');
+      await suggest('ISFJ', 'ISTJ');
       break;
 
     case 'ISTP':
-      user = await suggest('ESFJ', 'ESTJ');
+      await suggest('ESFJ', 'ESTJ');
       break;
 
     case 'ESTP':
-      user = await suggest('ISFJ');
+      await suggest('ISFJ');
       break;
 
     case 'ISFJ':
-      user = await suggest('ESFP', 'ESTP');
+      await suggest('ESFP', 'ESTP');
       break;
 
     case 'ESFJ':
-      user = await suggest('ISFP', 'ISTP');
+      await suggest('ISFP', 'ISTP');
       break;
 
     case 'ISTJ':
-      user = await suggest('ESFP');
+      await suggest('ESFP');
       break;
 
     case 'ESTJ':
-      user = await suggest('INTP', 'ISFP', 'ISTP');
+      await suggest('INTP', 'ISFP', 'ISTP');
       break;
   }
+  console.log(user);
   res.status(200).json({ success: true, user });
 });
 
