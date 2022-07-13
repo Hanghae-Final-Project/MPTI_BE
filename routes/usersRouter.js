@@ -189,6 +189,7 @@ router.post('/login', async (req, res) => {
     );
     res.send({
       token,
+      nickname,
     });
   } catch (err) {
     console.log(err);
@@ -273,6 +274,7 @@ router.get('/auth', authMiddleware, async (req, res) => {
   res.status(200).send({
     user: {
       userId: user.userId,
+      nickname: user.nickname,
     },
   });
 });
