@@ -265,6 +265,7 @@ router.put(
   }
 );
 
+// 로그인한 유저와 잘 맞는 mbti 유저 추천 기능
 router.get('/suggest', authMiddleware, async (req, res) => {
   const { mbti } = res.locals.user; // 로그인한 유저의 mbti
 
@@ -284,6 +285,7 @@ router.get('/suggest', authMiddleware, async (req, res) => {
   }
 
   // 로그인한 유저의 mbti를 매개변수로 받는 switch 문 (case 16개)
+  // 함수 내에 비동기적으로 처리되는 과정이 있으면 함수앞에 await 써주기
   switch (mbti) {
     case 'INFP':
       await suggest('ENFJ', 'ENTJ');
@@ -349,7 +351,6 @@ router.get('/suggest', authMiddleware, async (req, res) => {
       await suggest('INTP', 'ISFP', 'ISTP');
       break;
   }
-  console.log(user);
   res.status(200).json({ success: true, user });
 });
 
