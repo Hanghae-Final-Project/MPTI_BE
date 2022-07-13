@@ -4,29 +4,34 @@ const KakaoStrategy = require('passport-kakao').Strategy;
 const User = require('../schemas/usersSchema');
 
 module.exports = () => {
-  passport.use(new KakaoStrategy({
-    clientID: process.env.KAKAO_ID,
-    callbackURL: '/api/kakao/callback',
-  }, async (accessToken, refreshToken, profile, done) => {
-    console.log('kakao profile', profile);
-    try {
-      const exUser = await User.findOne({
-        where: { snsId: profile.id, provider: 'kakao' },
-      });
-      if (exUser) {
-        done(null, exUser);
-      } else {
-        const newUser = await User.create({
-          email: profile._json && profile._json.kakao_account_email,
-          name: profile.displayName,
-          snsId: profile.id,
-          provider: 'kakao',
-        });
-        done(null, newUser);
+  passport.use(
+    new KakaoStrategy(
+      {
+        clientID: process.env.KAKAO_ID,
+        callbackURL: '/api/kakao/callback',
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        console.log('kakao profile', profile);
+        try {
+          const exUser = await User.findOne({
+            where: { snsId: profile.id, provider: 'kakao' },
+          });
+          if (exUser) {
+            done(null, exUser);
+          } else {
+            const newUser = await User.create({
+              email: profile._json && profile._json.kakao_account_email,
+              name: profile.displayName,
+              snsId: profile.id,
+              provider: 'kakao',
+            });
+            done(null, newUser);
+          }
+        } catch (error) {
+          console.error(error);
+          done(error);
+        }
       }
-    } catch (error) {
-      console.error(error);
-      done(error);
-    }
-  }));
+    )
+  );
 };

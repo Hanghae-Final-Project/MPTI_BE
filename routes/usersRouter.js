@@ -18,8 +18,11 @@ const upload = multer({
     s3: s3,
     bucket: 'seohobucket',
     acl: 'public-read',
+    contentType: function (req, file, cb) {
+      cb(null, file.mimetype);
+    },
     key: function (req, file, cb) {
-      cb(null, Date.now() + '.' + file.originalname.split('.').pop()); // 이름 설정
+      cb(null, Date.now() + '.' + file.originalname); // 이름 설정
     },
   }),
 });
@@ -45,7 +48,7 @@ router.post('/signup', async (req, res) => {
       // birthday,
       // gender,
       // } = await postUsersSchema.validateAsync(req.body);
-    } =  req.body;
+    } = req.body;
     if (password !== passwordCheck) {
       res.status(400).send({
         errorMessage: '패스워드가 불일치합니다.',
@@ -187,9 +190,14 @@ router.post('/login', async (req, res) => {
         expiresIn: '120m',
       }
     );
-    res.send({
+    res.status(200).send({
       token,
-      nickname,
+
+      user: {
+        userId: user.userId,
+        nickname: user.nickname,
+        userNum: user.userNum,
+      },
     });
   } catch (err) {
     console.log(err);
@@ -209,6 +217,7 @@ router.put(
     const { nickname, gender, birthday, mbti, introduction } = req.body;
 
     const imageReq = req.files;
+    console.log(imageReq);
     let imageArray = [];
     function locationPusher() {
       for (let i = 0; i < imageReq.length; i++) {
@@ -257,14 +266,107 @@ router.put(
   }
 );
 
+// 로그인한 유저와 잘 맞는 mbti 유저 추천 기능
+router.get('/suggest', authMiddleware, async (req, res) => {
+  const { mbti } = res.locals.user; // 로그인한 유저의 mbti
+
+  // 재사용을 위해 유저정보 찾는 과정 함수화
+  let user = []; // 전역 변수 선언
+
+  let lookingFor = [];
+
+  // 매개변수의 갯수를 알 수 없으므로 rest 파라미터 사용
+  async function suggest(...args) {
+    for (let i = 0; i < args.length; i++) {
+      lookingFor.push({ mbti: args[i] });
+    }
+    return (user = await User.find({
+      $or: lookingFor,
+    }));
+  }
+
+  // 로그인한 유저의 mbti를 매개변수로 받는 switch 문 (case 16개)
+  // 함수 내에 비동기적으로 처리되는 과정이 있으면 함수앞에 await 써주기
+  switch (mbti) {
+    case 'INFP':
+      await suggest('ENFJ', 'ENTJ');
+      break;
+
+    case 'ENFP':
+      await suggest('INFJ', 'INTJ');
+      break;
+
+    case 'INFJ':
+      await suggest('ENFP', 'ENTP');
+      break;
+
+    case 'ENFJ':
+      await suggest('INFP', 'ISFP');
+      break;
+
+    case 'INTJ':
+      await suggest('ENFP', 'ENTP');
+      break;
+
+    case 'ENTJ':
+      await suggest('INFP', 'INTP');
+      break;
+
+    case 'INTP':
+      await suggest('ENTJ', 'ESTJ');
+      break;
+
+    case 'ENTP':
+      await suggest('INFJ', 'INTJ');
+      break;
+
+    case 'ISFP':
+      await suggest('ENFJ', 'ESFJ', 'ESTJ');
+      break;
+
+    case 'ESFP':
+      await suggest('ISFJ', 'ISTJ');
+      break;
+
+    case 'ISTP':
+      await suggest('ESFJ', 'ESTJ');
+      break;
+
+    case 'ESTP':
+      await suggest('ISFJ');
+      break;
+
+    case 'ISFJ':
+      await suggest('ESFP', 'ESTP');
+      break;
+
+    case 'ESFJ':
+      await suggest('ISFP', 'ISTP');
+      break;
+
+    case 'ISTJ':
+      await suggest('ESFP');
+      break;
+
+    case 'ESTJ':
+      await suggest('INTP', 'ISFP', 'ISTP');
+      break;
+  }
+  res.status(200).json({ success: true, user });
+});
+
 //소셜 로그인 카카오 구현
 router.get('/', passport.authenticate('kakao'));
 
-router.get('/callback', passport.authenticate('kakao', {
-  failureRedirect: '/',
-}), (req, res) => {
-  res.redirect('/');
-});
+router.get(
+  '/callback',
+  passport.authenticate('kakao', {
+    failureRedirect: '/',
+  }),
+  (req, res) => {
+    res.redirect('/');
+  }
+);
 
 // <---유저정보조회(토큰 내용 확인) API-->
 router.get('/auth', authMiddleware, async (req, res) => {
@@ -275,6 +377,7 @@ router.get('/auth', authMiddleware, async (req, res) => {
     user: {
       userId: user.userId,
       nickname: user.nickname,
+      userNum: user.userNum,
     },
   });
 });

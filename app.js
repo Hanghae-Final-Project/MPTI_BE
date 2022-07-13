@@ -1,13 +1,15 @@
 const express = require('express');
+const helmet = require('helmet');
 const cors = require('cors');
 const app = express();
 require('dotenv').config;
 const connect = require('./schemas');
 const kakaoRouter = require('./routes/usersRouter');
-const passport = require('passport')
+const passport = require('passport');
 const passportConfig = require('./passport');
 const session = require('express-session');
 app.use(cors({ origin: true, credentials: true }));
+app.use(helmet({ contentSecurityPolicy: false }));
 
 connect();
 passportConfig();
@@ -18,11 +20,13 @@ app.use('/api/posts', require('./routes/postsRouter.js'));
 app.use('/api', require('./routes/usersRouter'));
 app.use('/api', require('./routes/mypageRouter.js'));
 app.use('/api/kakao', kakaoRouter);
-app.use(session({
-  secret:'mpti',
+app.use(
+  session({
+    secret: 'mpti',
     resave: true,
-    saveUninitialized: true
-}));
+    saveUninitialized: true,
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
