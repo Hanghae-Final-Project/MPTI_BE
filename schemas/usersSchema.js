@@ -21,6 +21,9 @@ const UserSchema = new mongoose.Schema({
   userImage: {
     type: Array,
   },
+  profileImages: {
+    type: Array,
+  },
   nickname: {
     type: String,
   },
