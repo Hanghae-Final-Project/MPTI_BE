@@ -36,7 +36,7 @@ router.put(
   async (req, res) => {
     const { userNum } = req.params;
     const { userId } = res.locals.user;
-    const { nickname, mbti, introduction } = req.body;
+    const { nickname } = req.body;
 
     const imageReq = req.files;
     let imageArray = [];
@@ -55,9 +55,43 @@ router.put(
     } else {
       await User.updateOne(
         { userNum: parseInt(userNum) },
-        { $set: { nickname, userImage, mbti, introduction } }
+        { $set: { nickname, userImage } }
       );
       res.status(200).json({ success: true, message: '내 정보 수정 성공' });
+    }
+  }
+);
+
+// 프로필 수정 : 사용자 인증
+router.put(
+  '/mypage/profile/:userNum',
+  authMiddleware,
+  upload.array('profileImages'),
+  async (req, res) => {
+    const { userNum } = req.params;
+    const { userId } = res.locals.user;
+    const { introduction } = req.body;
+
+    const imageReq = req.files;
+    let imageArray = [];
+    function locationPusher() {
+      for (let i = 0; i < imageReq.length; i++) {
+        imageArray.push(imageReq[i].location);
+      }
+      return imageArray;
+    }
+    const profileImages = locationPusher();
+
+    const existingUser = await User.findOne({ userNum: parseInt(userNum) });
+
+    if (userId !== existingUser.userId) {
+      res.status(400).json({ success: false, message: '내 프로필이 아닙니다' });
+    } else {
+      await User.updateOne(
+        { userNum: parseInt(userNum) },
+        { $set: { profileImages, introduction } }
+      );
+      res.status(200).json({ success: true, message: '프로필 수정 성공' });
     }
   }
 );
