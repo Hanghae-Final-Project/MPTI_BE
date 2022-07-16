@@ -82,6 +82,8 @@ router.put(
     }
     const profileImages = locationPusher();
 
+    console.log(profileImages);
+
     const existingUser = await User.findOne({ userNum: parseInt(userNum) });
 
     if (userId !== existingUser.userId) {
