@@ -183,6 +183,8 @@ router.post('/login', async (req, res) => {
       password: crypt_password,
     }).exec();
 
+    await User.updateOne({ email: email }, { $set: { loggedin: '🟢' } });
+
     const token = jwt.sign(
       { userId: user._id.toHexString() },
       process.env.JWT_SECRET_KEY,
@@ -206,6 +208,14 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// 로그아웃 시 is_login값 변경기능, 토큰은 프론트에서 삭제해야함
+router.post('/logout', authMiddleware, async (req, res) => {
+  const { userNum } = res.locals.user;
+  await User.updateOne({ userNum }, { $set: { loggedin: ' ' } });
+  res.status(200).send({ message: '로그아웃 성공' });
+});
+
+// 최초 로그인시 추가정보 입력 기능
 router.put(
   '/signup/first',
   authMiddleware,
@@ -264,6 +274,39 @@ router.put(
     }
   }
 );
+
+// 약식 mbti 테스트
+router.post('/mbtitest', async (req, res) => {
+  const { first, second, third, fourth } = req.body;
+
+  let mbti = '';
+
+  if (first > 2) {
+    mbti += 'E';
+  } else {
+    mbti += 'I';
+  }
+
+  if (second > 2) {
+    mbti += 'S';
+  } else {
+    mbti += 'N';
+  }
+
+  if (third > 2) {
+    mbti += 'T';
+  } else {
+    mbti += 'F';
+  }
+
+  if (fourth > 2) {
+    mbti += 'J';
+  } else {
+    mbti += 'P';
+  }
+
+  res.status(200).send({ mbti });
+});
 
 // 로그인한 유저와 잘 맞는 mbti 유저 추천 기능
 router.get('/suggest', authMiddleware, async (req, res) => {

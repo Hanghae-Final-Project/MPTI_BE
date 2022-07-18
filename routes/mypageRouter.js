@@ -21,6 +21,21 @@ const upload = multer({
   }),
 });
 
+// 프로필 사진 업로드 기능
+router.post(
+  '/images',
+  // authMiddleware,
+  upload.single('profileImages'),
+  async (req, res) => {
+    try {
+      const profileImages = req.file.location;
+      res.status(200).json({ success: true, profileImages });
+    } catch (err) {
+      res.status(400).send({ result: 'fail' });
+    }
+  }
+);
+
 // 마이페이지 조회: 사용자 인증
 router.get('/mypage/:userNum', authMiddleware, async (req, res) => {
   const { userNum } = req.params;
@@ -66,21 +81,21 @@ router.put(
 router.put(
   '/mypage/profile/:userNum',
   authMiddleware,
-  upload.array('profileImages'),
+  // upload.array('profileImages'),
   async (req, res) => {
     const { userNum } = req.params;
     const { userId } = res.locals.user;
-    const { introduction } = req.body;
+    const { introduction, profileImages } = req.body;
 
-    const imageReq = req.files;
-    let imageArray = [];
-    function locationPusher() {
-      for (let i = 0; i < imageReq.length; i++) {
-        imageArray.push(imageReq[i].location);
-      }
-      return imageArray;
-    }
-    const profileImages = locationPusher();
+    // const imageReq = req.files;
+    // let imageArray = [];
+    // function locationPusher() {
+    //   for (let i = 0; i < imageReq.length; i++) {
+    //     imageArray.push(imageReq[i].location);
+    //   }
+    //   return imageArray;
+    // }
+    // const profileImages = locationPusher();
 
     console.log(profileImages);
 

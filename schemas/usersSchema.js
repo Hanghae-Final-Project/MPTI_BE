@@ -53,6 +53,9 @@ const UserSchema = new mongoose.Schema({
   snsId: {
     type: String,
   },
+  loggedin: {
+    type: String,
+  },
 });
 
 UserSchema.virtual('userId').get(function () {
