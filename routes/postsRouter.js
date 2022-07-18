@@ -68,7 +68,7 @@ router.post(
   async (req, res) => {
     try {
       console.log(res.locals.user);
-      const { userId, nickname, userImage } = res.locals.user;
+      const { userId, nickname, userImage, userNum } = res.locals.user;
       const { postCategory, postContent } = req.body;
 
       const imageReq = req.files;
@@ -91,6 +91,7 @@ router.post(
         createdAt,
         postContent,
         userId,
+        userNum,
         countLikes,
         nickname,
         userImage,
