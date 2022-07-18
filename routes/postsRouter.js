@@ -42,6 +42,8 @@ router.get(
   async (req, res) => {
     try {
       const { postId } = req.params;
+      const existLikes = await Post.findOne({ postId: postId });
+      const countLikes = existLikes.countLikes;
       const posts = await Post.findOne({ postId: parseInt(postId) });
       const existingComment = await Comment.find({
         postId: parseInt(postId),
@@ -50,6 +52,7 @@ router.get(
       res.status(200).json({
         posts,
         existingComment,
+        countLikes,
         message: '상세페이지 보기 성공',
       });
     } catch (err) {
