@@ -49,7 +49,26 @@ router.get('/chatList', authMiddleware, async (req, res) => {
   try {
     const { userNum } = res.locals.user;
     const chatList = await Room.find({ members: userNum });
-    res.status(200).send({ message: '방 불러오기 성공', chatList });
+    let userImage;
+    let nickname;
+    let mbti;
+    chatList.forEach((chatList) => {
+      if (userNum === chatList.members[0]) {
+        userImage = chatList.receiverUserImage;
+        nickname = chatList.receiverNickname;
+        mbti = chatList.receiverMbti;
+      } else {
+        userImage = chatList.senderUserImage;
+        nickname = chatList.senderNickname;
+        mbti = chatList.senderMbti;
+      }
+    });
+    const userInfo = [{ userImage, nickname, mbti }];
+    res.status(200).send({
+      message: '방 불러오기 성공',
+      chatList,
+      userInfo,
+    });
   } catch (err) {
     res.status(400).send({ errorMessage: '방 불러오기 실패' });
     console.log('실패 로그: ' + err);
