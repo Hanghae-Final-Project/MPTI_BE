@@ -28,7 +28,7 @@ router.put('/block', authMiddleware, async (req, res) => {
 });
 
 // 유저 차단 해제 기능
-router.put('/blockRemove', authMiddleware, async (req, res) => {
+router.put('/unblock', authMiddleware, async (req, res) => {
   try {
     const { userNum } = res.locals.user;
     const blockedUserNum = parseInt(req.body.userNum);
