@@ -28,6 +28,8 @@ router.post('/chat', authMiddleware, async (req, res) => {
 
     if (existingRoom) {
       res.status(400).send({ errorMessage: '이미 존재하는 방입니다' });
+    } else if (receiver.blockedUsers.includes(senderUserNum) === true) {
+      res.status(400).send({ message: '이 유저는 당신을 차단한 유저입니다.' });
     } else {
       const createdRoom = await Room.create({
         members,
