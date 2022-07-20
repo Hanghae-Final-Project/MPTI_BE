@@ -24,7 +24,7 @@ router.post('/chat', authMiddleware, async (req, res) => {
     const existingRoom = await Room.findOne({ members: members });
 
     if (existingRoom) {
-      res.status(400).json({ errorMessage: '이미 존재하는 방입니다' });
+      res.status(400).send({ errorMessage: '이미 존재하는 방입니다' });
     } else {
       const createdRoom = await Room.create({
         members,
@@ -36,10 +36,10 @@ router.post('/chat', authMiddleware, async (req, res) => {
         receiverMbti,
       });
 
-      res.status(200).json({ message: '방 생성 성공', Room: createdRoom });
+      res.status(200).send({ message: '방 생성 성공', Room: createdRoom });
     }
   } catch (err) {
-    res.status(400).json({ errorMessage: '방 생성 실패' });
+    res.status(400).send({ errorMessage: '방 생성 실패' });
     console.log('실패 로그: ' + err);
   }
 });
@@ -49,9 +49,9 @@ router.get('/chatList', authMiddleware, async (req, res) => {
   try {
     const { userNum } = res.locals.user;
     const chatList = await Room.find({ members: userNum });
-    res.status(200).json({ message: '방 불러오기 성공', chatList });
+    res.status(200).send({ message: '방 불러오기 성공', chatList });
   } catch (err) {
-    res.status(400).json({ errorMessage: '방 불러오기 실패' });
+    res.status(400).send({ errorMessage: '방 불러오기 실패' });
     console.log('실패 로그: ' + err);
   }
 });
@@ -76,16 +76,16 @@ router.put('/chat/:roomId', authMiddleware, async (req, res) => {
       await Message.deleteMany({ roomId: parseInt(roomId) });
       res
         .status(200)
-        .json({ message: '대화인원이 없어서 채팅방이 삭제됐습니다' });
+        .send({ message: '대화인원이 없어서 채팅방이 삭제됐습니다' });
     } else {
       await Room.updateOne(
         { roomId: parseInt(roomId) },
         { $set: { members: existingMembers } }
       );
-      res.status(200).json({ message: '채팅방에서 나갔습니다' });
+      res.status(200).send({ message: '채팅방에서 나갔습니다' });
     }
   } catch (err) {
-    res.status(400).json({ errorMessage: '채팅방 나가기 실패' });
+    res.status(400).send({ errorMessage: '채팅방 나가기 실패' });
     console.log('실패 로그: ' + err);
   }
 });
@@ -123,9 +123,9 @@ router.post('/message/:roomId', authMiddleware, async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: '메세지 보내기 성공', createdMessage });
+    res.status(200).send({ message: '메세지 보내기 성공', createdMessage });
   } catch (err) {
-    res.status(400).json({ errorMessage: '메세지 보내기 실패' });
+    res.status(400).send({ errorMessage: '메세지 보내기 실패' });
     console.log('실패 로그: ' + err);
   }
 });
