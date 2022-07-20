@@ -20,8 +20,11 @@ router.post('/chat', authMiddleware, async (req, res) => {
     const receiverMbti = receiver.mbti;
 
     const members = [receiverUserNum, senderUserNum];
+    const reversMembers = [senderUserNum, receiverUserNum];
 
-    const existingRoom = await Room.findOne({ members: members });
+    const existingRoom = await Room.findOne({
+      $or: [{ members: members }, { members: reversMembers }],
+    });
 
     if (existingRoom) {
       res.status(400).send({ errorMessage: '이미 존재하는 방입니다' });
