@@ -38,8 +38,12 @@ router.post('/chat', authMiddleware, async (req, res) => {
         receiverNickname,
         receiverMbti,
       });
-
-      res.status(200).send({ message: '방 생성 성공', Room: createdRoom });
+      const roomId = createdRoom.roomId;
+      res.status(200).send({
+        message: '방 생성 성공',
+        Room: createdRoom,
+        roomId,
+      });
     }
   } catch (err) {
     res.status(400).send({ errorMessage: '방 생성 실패' });
