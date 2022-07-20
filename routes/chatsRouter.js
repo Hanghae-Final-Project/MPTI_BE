@@ -52,18 +52,21 @@ router.get('/chatList', authMiddleware, async (req, res) => {
     let userImage;
     let nickname;
     let mbti;
+    let userInfo = [];
     chatList.forEach((chatList) => {
-      if (userNum === chatList.members[0]) {
+      if (userNum === chatList.members[1]) {
         userImage = chatList.receiverUserImage;
         nickname = chatList.receiverNickname;
         mbti = chatList.receiverMbti;
+        userInfo.push({ userImage, nickname, mbti });
       } else {
         userImage = chatList.senderUserImage;
         nickname = chatList.senderNickname;
         mbti = chatList.senderMbti;
+        userInfo.push({ userImage, nickname, mbti });
       }
     });
-    const userInfo = [{ userImage, nickname, mbti }];
+
     res.status(200).send({
       message: '방 불러오기 성공',
       chatList,
