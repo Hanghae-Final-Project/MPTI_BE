@@ -52,12 +52,21 @@ router.get('/chatList', authMiddleware, async (req, res) => {
   try {
     const { userNum } = res.locals.user;
     const chatList = await Room.find({ members: userNum });
+
     let userImage;
     let nickname;
     let mbti;
     let userInfo = [];
     chatList.forEach((chatList) => {
-      if (userNum === chatList.members[1]) {
+      if (chatList.members.length === 1) {
+        userImage = chatList.leftUserImage;
+        nickname = chatList.leftUserNickname;
+        mbti = chatList.leftUserMbti;
+        userInfo.push({ userImage, nickname, mbti });
+      } else if (
+        chatList.members.length === 2 &&
+        userNum === chatList.members[1]
+      ) {
         userImage = chatList.receiverUserImage;
         nickname = chatList.receiverNickname;
         mbti = chatList.receiverMbti;
@@ -87,6 +96,7 @@ router.put('/chat/:roomId', authMiddleware, async (req, res) => {
     const { roomId } = req.params;
     const { userNum } = res.locals.user;
     const existingRoom = await Room.findOne({ roomId: parseInt(roomId) });
+    const leftUser = await User.findOne({ userNum });
 
     let existingMembers = existingRoom.members;
 
@@ -105,7 +115,14 @@ router.put('/chat/:roomId', authMiddleware, async (req, res) => {
     } else {
       await Room.updateOne(
         { roomId: parseInt(roomId) },
-        { $set: { members: existingMembers } }
+        {
+          $set: {
+            members: existingMembers,
+            leftUserImage: leftUser.userImage,
+            leftUserNickname: leftUser.nickname,
+            leftUserMbti: leftUser.mbti,
+          },
+        }
       );
       res.status(200).send({ message: '채팅방에서 나갔습니다' });
     }
@@ -124,14 +141,26 @@ router.post('/message/:roomId', authMiddleware, async (req, res) => {
 
     const now = new Date();
     const date = now.toLocaleDateString('ko-KR');
+    const year = Number(date.split('.')[0]);
+    let month = Number(date.split('.')[1].trim());
+    if (month < 10) {
+      month = '0' + month;
+    }
+    let day = Number(date.split('.')[2].trim());
+    if (day < 10) {
+      day = '0' + day;
+    }
     let hours = now.getHours();
     if (hours === 0) {
       hours = 12;
     } else if (hours < 12 && hours !== 0) {
       hours = '0' + hours;
     }
-    const minutes = now.getMinutes();
-    const messageTime = date + ' ' + hours + ':' + minutes;
+    let minutes = now.getMinutes();
+    if (minutes < 10) {
+      minutes = '0' + minutes;
+    }
+    const messageTime = `${year}. ${month}. ${day} ${hours}:${minutes}`;
     const createdMessage = await Message.create({
       roomId,
       content,
