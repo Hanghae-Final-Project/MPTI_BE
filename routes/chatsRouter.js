@@ -190,6 +190,7 @@ router.get('/message/:roomId', authMiddleware, async (req, res) => {
     Connection: 'keep-alive',
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
+    Authorization: `Bearer something`,
   });
 
   const { roomId } = req.params;
