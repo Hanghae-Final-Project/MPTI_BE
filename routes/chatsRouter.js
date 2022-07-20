@@ -1,0 +1,154 @@
+const router = require('express').Router();
+const User = require('../schemas/usersSchema');
+const Room = require('../schemas/roomsSchema');
+const Message = require('../schemas/messagesSchema');
+const authMiddleware = require('../middlewares/auth-middleware');
+
+// 채팅방 생성기능
+router.post('/chat', authMiddleware, async (req, res) => {
+  try {
+    const senderUserNum = res.locals.user.userNum;
+    const senderUserImage = res.locals.user.userImage;
+    const senderNickname = res.locals.user.nickname;
+    const senderMbti = res.locals.user.mbti;
+
+    const receiver = await User.findOne({ userNum: req.body.userNum });
+
+    const receiverUserNum = receiver.userNum;
+    const receiverUserImage = receiver.userImage;
+    const receiverNickname = receiver.nickname;
+    const receiverMbti = receiver.mbti;
+
+    const members = [receiverUserNum, senderUserNum];
+
+    const existingRoom = await Room.findOne({ members: members });
+
+    if (existingRoom) {
+      res.status(400).json({ errorMessage: '이미 존재하는 방입니다' });
+    } else {
+      const createdRoom = await Room.create({
+        members,
+        senderUserImage,
+        senderNickname,
+        senderMbti,
+        receiverUserImage,
+        receiverNickname,
+        receiverMbti,
+      });
+
+      res.status(200).json({ message: '방 생성 성공', Room: createdRoom });
+    }
+  } catch (err) {
+    res.status(400).json({ errorMessage: '방 생성 실패' });
+    console.log('실패 로그: ' + err);
+  }
+});
+
+// 채팅방 리스트 출력
+router.get('/chatList', authMiddleware, async (req, res) => {
+  try {
+    const { userNum } = res.locals.user;
+    const chatList = await Room.find({ members: userNum });
+    res.status(200).json({ message: '방 불러오기 성공', chatList });
+  } catch (err) {
+    res.status(400).json({ errorMessage: '방 불러오기 실패' });
+    console.log('실패 로그: ' + err);
+  }
+});
+
+// 채팅방 나가기(members배열 수정 후 만약 members배열의 길이가 0이면 채팅방 완전 삭제)
+router.put('/chat/:roomId', authMiddleware, async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const { userNum } = res.locals.user;
+    const existingRoom = await Room.findOne({ roomId: parseInt(roomId) });
+
+    let existingMembers = existingRoom.members;
+
+    if (existingMembers.includes(userNum) === true) {
+      existingMembers = existingMembers.filter((data) => {
+        return data !== userNum;
+      });
+    }
+
+    if (existingMembers.length === 0) {
+      await Room.deleteOne({ roomId: parseInt(roomId) });
+      await Message.deleteMany({ roomId: parseInt(roomId) });
+      res
+        .status(200)
+        .json({ message: '대화인원이 없어서 채팅방이 삭제됐습니다' });
+    } else {
+      await Room.updateOne(
+        { roomId: parseInt(roomId) },
+        { $set: { members: existingMembers } }
+      );
+      res.status(200).json({ message: '채팅방에서 나갔습니다' });
+    }
+  } catch (err) {
+    res.status(400).json({ errorMessage: '채팅방 나가기 실패' });
+    console.log('실패 로그: ' + err);
+  }
+});
+
+// 메세지 보내기
+router.post('/message/:roomId', authMiddleware, async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const { content } = req.body;
+    const { userNum, userImage } = res.locals.user;
+
+    const now = new Date();
+    const date = now.toLocaleDateString('ko-KR');
+    let hours = now.getHours();
+    if (hours === 0) {
+      hours = 12;
+    } else if (hours < 12 && hours !== 0) {
+      hours = '0' + hours;
+    }
+    const minutes = now.getMinutes();
+    const messageTime = date + ' ' + hours + ':' + minutes;
+    const createdMessage = await Message.create({
+      roomId,
+      content,
+      userNum,
+      userImage,
+      messageTime,
+    });
+    await Room.updateOne(
+      { roomId: parseInt(roomId) },
+      {
+        $set: {
+          recentMessage: content,
+          recentMessageTime: messageTime,
+        },
+      }
+    );
+    res.status(200).json({ message: '메세지 보내기 성공', createdMessage });
+  } catch (err) {
+    res.status(400).json({ errorMessage: '메세지 보내기 실패' });
+    console.log('실패 로그: ' + err);
+  }
+});
+
+// 채팅방 상세보기(실시간)
+router.get('/message/:roomId', authMiddleware, async (req, res) => {
+  res.writeHead(200, {
+    Connection: 'keep-alive',
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+  });
+
+  const { roomId } = req.params;
+  const messages = await Message.find({ roomId: parseInt(roomId) });
+  res.write('event: test\n');
+  res.write(`data: ${JSON.stringify(messages)}\n\n`);
+
+  const pipeline = [{ $match: { 'fullDocument.roomId': parseInt(roomId) } }];
+  const changeStream = Message.watch(pipeline);
+  changeStream.on('change', (result) => {
+    res.write('event: test\n');
+    res.write(`data: ${JSON.stringify([result.fullDocument])}\n\n`);
+  });
+});
+
+module.exports = router;

@@ -19,6 +19,7 @@ app.use('/api/comments', require('./routes/commentsRouter.js'));
 app.use('/api/posts', require('./routes/postsRouter.js'));
 app.use('/api', require('./routes/usersRouter'));
 app.use('/api', require('./routes/mypageRouter.js'));
+app.use('/api', require('./routes/chatsRouter'));
 app.use('/api/kakao', kakaoRouter);
 app.use(
   session({
