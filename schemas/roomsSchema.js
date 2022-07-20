@@ -33,6 +33,15 @@ const RoomSchema = new mongoose.Schema({
   recentMessageTime: {
     type: String,
   },
+  leftUserImage: {
+    type: Array,
+  },
+  leftUserNickname: {
+    type: String,
+  },
+  leftUserMbti: {
+    type: String,
+  },
 });
 
 RoomSchema.plugin(AutoIncrement, { inc_field: 'roomId' });
