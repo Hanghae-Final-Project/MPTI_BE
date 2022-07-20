@@ -56,6 +56,9 @@ const UserSchema = new mongoose.Schema({
   loggedin: {
     type: String,
   },
+  blockedUsers: {
+    type: Array,
+  },
 });
 
 UserSchema.virtual('userId').get(function () {
