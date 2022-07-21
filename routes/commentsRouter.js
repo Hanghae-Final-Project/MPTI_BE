@@ -13,14 +13,13 @@ router.post('/:postId', authMiddleware, async (req, res) => {
 
   const existingPost = Post.findOne({ postId });
   const author = User.findOne({ userNum: existingPost.userNum });
+  const blockedUsers = author.blockedUsers;
 
-  if (author.blockedUsers.includes(userNum) === true) {
-    res
-      .status(400)
-      .send({
-        message: '상대방이 당신을 차단해서 댓글을 달 수 없습니다.',
-        blocked: 'blocked',
-      });
+  if (blockedUsers.includes(userNum) === true) {
+    res.status(400).send({
+      message: '상대방이 당신을 차단해서 댓글을 달 수 없습니다.',
+      blocked: 'blocked',
+    });
   }
 
   const now = new Date();
