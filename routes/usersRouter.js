@@ -281,25 +281,25 @@ router.post('/mbtitest', async (req, res) => {
 
   let mbti = '';
 
-  if (first > 2) {
+  if (first.match(/E/g)?.length > 2) {
     mbti += 'E';
   } else {
     mbti += 'I';
   }
 
-  if (second > 2) {
+  if (second.match(/S/g)?.length > 2) {
     mbti += 'S';
   } else {
     mbti += 'N';
   }
 
-  if (third > 2) {
+  if (third.match(/T/g)?.length > 2) {
     mbti += 'T';
   } else {
     mbti += 'F';
   }
 
-  if (fourth > 2) {
+  if (fourth.match(/J/g)?.length > 2) {
     mbti += 'J';
   } else {
     mbti += 'P';
