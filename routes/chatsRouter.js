@@ -159,7 +159,7 @@ router.post('/message/:roomId', authMiddleware, async (req, res) => {
     let hours = now.getHours();
     if (hours === 0) {
       hours = 12;
-    } else if (hours < 12 && hours !== 0) {
+    } else if (hours < 10 && hours !== 0) {
       hours = '0' + hours;
     }
     let minutes = now.getMinutes();
