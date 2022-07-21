@@ -17,7 +17,10 @@ router.post('/:postId', authMiddleware, async (req, res) => {
   if (author.blockedUsers.includes(userNum) === true) {
     res
       .status(400)
-      .send({ message: '상대방이 당신을 차단해서 댓글을 달 수 없습니다.' });
+      .send({
+        message: '상대방이 당신을 차단해서 댓글을 달 수 없습니다.',
+        blocked: 'blocked',
+      });
   }
 
   const now = new Date();

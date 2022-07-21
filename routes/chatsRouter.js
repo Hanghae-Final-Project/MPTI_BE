@@ -37,11 +37,17 @@ router.post('/chat', authMiddleware, async (req, res) => {
     } else if (receiver.blockedUsers.includes(senderUserNum) === true) {
       res
         .status(400)
-        .send({ message: '상대방이 당신을 차단해서 대화를 할 수 없습니다.' });
+        .send({
+          message: '상대방이 당신을 차단해서 대화를 할 수 없습니다.',
+          blocked: 'blocked',
+        });
     } else if (senderBlockedUsers.includes(receiverUserNum) === true) {
       res
         .status(400)
-        .send({ message: '당신이 상대방을 차단해서 대화를 할 수 없습니다.' });
+        .send({
+          message: '당신이 상대방을 차단해서 대화를 할 수 없습니다.',
+          blocked: 'blocked',
+        });
     } else {
       const createdRoom = await Room.create({
         members,
