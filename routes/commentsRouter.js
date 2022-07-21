@@ -11,7 +11,20 @@ router.post('/:postId', authMiddleware, async (req, res) => {
   const { userId, nickname, userImage } = res.locals.user;
   const { comment } = req.body;
 
-  const createdAt = new Date().toLocaleDateString('ko-KR');
+  const now = new Date();
+  const date = now.toLocaleDateString('ko-KR');
+  const year = Number(date.split('.')[0]);
+  let month = Number(date.split('.')[1].trim());
+  if (month < 10) {
+    month = '0' + month;
+  }
+  let day = Number(date.split('.')[2].trim());
+  if (day < 10) {
+    day = '0' + day;
+  }
+  const createdAt = `${year}. ${month}. ${day}`;
+
+  // const createdAt = new Date().toLocaleDateString('ko-KR');
 
   if (!comment) {
     return res
