@@ -191,24 +191,28 @@ router.post('/message/:roomId', authMiddleware, async (req, res) => {
 });
 
 // 채팅방 상세보기(실시간)
-router.get('/message/:roomId', authMiddleware, async (req, res) => {
-  res.writeHead(200, {
-    Connection: 'keep-alive',
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-  });
+router.get(
+  '/message/:roomId',
+  // authMiddleware,
+  async (req, res) => {
+    res.writeHead(200, {
+      Connection: 'keep-alive',
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+    });
 
-  const { roomId } = req.params;
-  const messages = await Message.find({ roomId: parseInt(roomId) });
-  res.write('event: test\n');
-  res.write(`data: ${JSON.stringify(messages)}\n\n`);
-
-  const pipeline = [{ $match: { 'fullDocument.roomId': parseInt(roomId) } }];
-  const changeStream = Message.watch(pipeline);
-  changeStream.on('change', (result) => {
+    const { roomId } = req.params;
+    const messages = await Message.find({ roomId: parseInt(roomId) });
     res.write('event: test\n');
-    res.write(`data: ${JSON.stringify([result.fullDocument])}\n\n`);
-  });
-});
+    res.write(`data: ${JSON.stringify(messages)}\n\n`);
+
+    const pipeline = [{ $match: { 'fullDocument.roomId': parseInt(roomId) } }];
+    const changeStream = Message.watch(pipeline);
+    changeStream.on('change', (result) => {
+      res.write('event: test\n');
+      res.write(`data: ${JSON.stringify([result.fullDocument])}\n\n`);
+    });
+  }
+);
 
 module.exports = router;
