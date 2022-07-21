@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const User = require('../schemas/usersSchema');
+const Room = require('../schemas/roomsSchema');
 const authMiddleware = require('../middlewares/auth-middleware');
 
 // 유저 차단하기 기능 (채팅 못걸게)
@@ -19,6 +20,12 @@ router.put('/block', authMiddleware, async (req, res) => {
         { userNum },
         { $set: { blockedUsers: existingBlockedUsers } }
       );
+      await Room.deleteOne({
+        $or: [
+          { members: [userNum, blockedUserNum] },
+          { members: [blockedUserNum, userNum] },
+        ],
+      });
       res.status(200).send({ message: '차단 성공' });
     }
   } catch (err) {
