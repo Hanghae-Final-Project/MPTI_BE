@@ -64,12 +64,14 @@ router.post('/chat', authMiddleware, async (req, res) => {
 // 채팅방 리스트 출력
 router.get('/chatList', authMiddleware, async (req, res) => {
   try {
-    const { userNum } = res.locals.user;
+    let { userNum } = res.locals.user;
     const chatList = await Room.find({ members: userNum });
 
     let userImage;
     let nickname;
     let mbti;
+    userNum = 0;
+    let introduction;
     let userInfo = [];
     chatList.forEach((chatList) => {
       if (chatList.members.length === 1) {

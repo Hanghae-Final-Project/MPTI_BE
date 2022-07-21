@@ -39,12 +39,6 @@ const RoomSchema = new mongoose.Schema({
   receiverIntroduction: {
     type: String,
   },
-  recentMessage: {
-    type: String,
-  },
-  recentMessageTime: {
-    type: String,
-  },
   leftUserImage: {
     type: Array,
   },
@@ -58,6 +52,12 @@ const RoomSchema = new mongoose.Schema({
     type: String,
   },
   leftUserIntroduction: {
+    type: String,
+  },
+  recentMessage: {
+    type: String,
+  },
+  recentMessageTime: {
     type: String,
   },
 });
