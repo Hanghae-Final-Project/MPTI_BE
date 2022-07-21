@@ -11,18 +11,10 @@ router.post('/:postId', authMiddleware, async (req, res) => {
   const { userId, nickname, userImage, userNum } = res.locals.user;
   const { comment } = req.body;
 
-  const existingPost = Post.findOne({ postId });
-  const author = User.findOne({ userNum: existingPost.userNum });
+  const existingPost = await Post.findOne({ postId: parseInt(postId) });
+  const postUserNum = existingPost.userNum;
+  const author = await User.findOne({ userNum: postUserNum });
   const blockedUsers = author.blockedUsers;
-
-  console.log(blockedUsers);
-
-  if (blockedUsers.includes(userNum) === true) {
-    res.status(400).send({
-      message: '상대방이 당신을 차단해서 댓글을 달 수 없습니다.',
-      blocked: 'blocked',
-    });
-  }
 
   const now = new Date();
   const date = now.toLocaleDateString('ko-KR');
@@ -43,6 +35,11 @@ router.post('/:postId', authMiddleware, async (req, res) => {
     return res
       .status(400)
       .json({ success: false, message: '내용을 입력하세요' });
+  } else if (blockedUsers.includes(userNum) === true) {
+    res.status(400).send({
+      message: '상대방이 당신을 차단해서 댓글을 달 수 없습니다.',
+      blocked: 'blocked',
+    });
   } else {
     const createdComment = await Comment.create({
       comment,
