@@ -13,6 +13,8 @@ router.post('/chat', authMiddleware, async (req, res) => {
     const senderMbti = res.locals.user.mbti;
     const senderIntroduction = res.locals.user.introduction;
 
+    const senderBlockedUsers = res.locals.user.blockedUsers;
+
     const receiver = await User.findOne({ userNum: req.body.userNum });
 
     const receiverUserNum = receiver.userNum;
@@ -33,7 +35,13 @@ router.post('/chat', authMiddleware, async (req, res) => {
         .status(400)
         .send({ errorMessage: '이미 존재하는 방입니다', Room: existingRoom });
     } else if (receiver.blockedUsers.includes(senderUserNum) === true) {
-      res.status(400).send({ message: '이 유저는 당신을 차단한 유저입니다.' });
+      res
+        .status(400)
+        .send({ message: '상대방이 당신을 차단해서 대화를 할 수 없습니다.' });
+    } else if (senderBlockedUsers.includes(receiverUserNum) === true) {
+      res
+        .status(400)
+        .send({ message: '당신이 상대방을 차단해서 대화를 할 수 없습니다.' });
     } else {
       const createdRoom = await Room.create({
         members,
