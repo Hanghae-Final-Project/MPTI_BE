@@ -70,7 +70,6 @@ router.get('/chatList', authMiddleware, async (req, res) => {
     let userImage;
     let nickname;
     let mbti;
-    userNum = 0;
     let introduction;
     let userInfo = [];
     chatList.forEach((chatList) => {
