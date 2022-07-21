@@ -18,6 +18,12 @@ const RoomSchema = new mongoose.Schema({
   senderMbti: {
     type: String,
   },
+  senderUserNum: {
+    type: String,
+  },
+  senderIntroduction: {
+    type: String,
+  },
   receiverUserImage: {
     type: Array,
   },
@@ -25,6 +31,12 @@ const RoomSchema = new mongoose.Schema({
     type: String,
   },
   receiverMbti: {
+    type: String,
+  },
+  receiverUserNum: {
+    type: String,
+  },
+  receiverIntroduction: {
     type: String,
   },
   recentMessage: {
@@ -40,6 +52,12 @@ const RoomSchema = new mongoose.Schema({
     type: String,
   },
   leftUserMbti: {
+    type: String,
+  },
+  leftUserNum: {
+    type: String,
+  },
+  leftUserIntroduction: {
     type: String,
   },
 });

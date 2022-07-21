@@ -11,6 +11,7 @@ router.post('/chat', authMiddleware, async (req, res) => {
     const senderUserImage = res.locals.user.userImage;
     const senderNickname = res.locals.user.nickname;
     const senderMbti = res.locals.user.mbti;
+    const senderIntroduction = res.locals.user.introduction;
 
     const receiver = await User.findOne({ userNum: req.body.userNum });
 
@@ -18,6 +19,7 @@ router.post('/chat', authMiddleware, async (req, res) => {
     const receiverUserImage = receiver.userImage;
     const receiverNickname = receiver.nickname;
     const receiverMbti = receiver.mbti;
+    const receiverIntroduction = receiver.introduction;
 
     const members = [receiverUserNum, senderUserNum];
     const reversMembers = [senderUserNum, receiverUserNum];
@@ -38,9 +40,13 @@ router.post('/chat', authMiddleware, async (req, res) => {
         senderUserImage,
         senderNickname,
         senderMbti,
+        senderUserNum,
+        senderIntroduction,
         receiverUserImage,
         receiverNickname,
         receiverMbti,
+        receiverUserNum,
+        receiverIntroduction,
       });
       const roomId = createdRoom.roomId;
       res.status(200).send({
@@ -70,7 +76,9 @@ router.get('/chatList', authMiddleware, async (req, res) => {
         userImage = chatList.leftUserImage;
         nickname = chatList.leftUserNickname;
         mbti = chatList.leftUserMbti;
-        userInfo.push({ userImage, nickname, mbti });
+        userNum = chatList.leftUserNum;
+        introduction = chatList.leftUserIntroduction;
+        userInfo.push({ userImage, nickname, mbti, userNum, introduction });
       } else if (
         chatList.members.length === 2 &&
         userNum === chatList.members[1]
@@ -78,12 +86,16 @@ router.get('/chatList', authMiddleware, async (req, res) => {
         userImage = chatList.receiverUserImage;
         nickname = chatList.receiverNickname;
         mbti = chatList.receiverMbti;
-        userInfo.push({ userImage, nickname, mbti });
+        userNum = chatList.receiverUserNum;
+        introduction = chatList.receiverIntroduction;
+        userInfo.push({ userImage, nickname, mbti, userNum, introduction });
       } else {
         userImage = chatList.senderUserImage;
         nickname = chatList.senderNickname;
         mbti = chatList.senderMbti;
-        userInfo.push({ userImage, nickname, mbti });
+        userNum = chatList.senderUserNum;
+        introduction = chatList.senderIntroduction;
+        userInfo.push({ userImage, nickname, mbti, userNum, introduction });
       }
     });
 
@@ -129,6 +141,8 @@ router.put('/chat/:roomId', authMiddleware, async (req, res) => {
             leftUserImage: leftUser.userImage,
             leftUserNickname: leftUser.nickname,
             leftUserMbti: leftUser.mbti,
+            leftUserNum: leftUser.userNum,
+            leftUserIntroduction: leftUser.introduction,
           },
         }
       );
