@@ -8,8 +8,17 @@ const authMiddleware = require('../middlewares/auth-middleware');
 
 router.post('/:postId', authMiddleware, async (req, res) => {
   const { postId } = req.params;
-  const { userId, nickname, userImage } = res.locals.user;
+  const { userId, nickname, userImage, userNum } = res.locals.user;
   const { comment } = req.body;
+
+  const existingPost = Post.findOne({ postId });
+  const author = User.findOne({ userNum: existingPost.userNum });
+
+  if (author.blockedUsers.includes(userNum) === true) {
+    res
+      .status(400)
+      .send({ message: '상대방이 당신을 차단해서 댓글을 달 수 없습니다.' });
+  }
 
   const now = new Date();
   const date = now.toLocaleDateString('ko-KR');
