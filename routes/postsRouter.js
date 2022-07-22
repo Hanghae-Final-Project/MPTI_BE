@@ -234,7 +234,7 @@ router.get(
     const existLikeUsers = await Like.find({ postId });
     const existLikes = await Post.findOne({ postId: postId });
     const countLikes = existLikes.countLikes;
-    const likeUsers = existLikeUsers.map((item) => item.userId);
+    const likeUsers = existLikeUsers.map((item) => item.userNum);
     res.json({ likeUsers, countLikes });
   }
 );
