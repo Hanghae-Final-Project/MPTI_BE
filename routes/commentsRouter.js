@@ -45,6 +45,7 @@ router.post('/:postId', authMiddleware, async (req, res) => {
       comment,
       createdAt,
       userId,
+      userNum,
       nickname,
       userImage,
       postId,
