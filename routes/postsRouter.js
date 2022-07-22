@@ -187,7 +187,7 @@ router.delete('/:postId', authMiddleware, async (req, res) => {
 
 // 좋아요 추가 기능
 router.post('/likes/:postId', authMiddleware, async (req, res) => {
-  const { userId } = res.locals.user;
+  const { userId, userNum } = res.locals.user;
   const { postId } = req.params;
   const isLike = await Like.findOne({ userId: userId, postId });
   if (isLike) {
@@ -195,7 +195,7 @@ router.post('/likes/:postId', authMiddleware, async (req, res) => {
       .status(400)
       .json({ errorMessage: '이미 좋아요 되어있는 상태입니다.' });
   } else {
-    await Like.create({ userId, postId });
+    await Like.create({ userId, postId, userNum });
     const existLikes = await Post.findOne({ postId: postId });
     if (existLikes) {
       const countLikes = existLikes.countLikes + 1;
