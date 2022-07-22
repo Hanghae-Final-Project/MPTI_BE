@@ -47,7 +47,7 @@ router.get(
       const posts = await Post.findOne({ postId: parseInt(postId) });
       const existingComment = await Comment.find({
         postId: parseInt(postId),
-      }).sort({ postId: -1 });
+      }).sort({ commentId: -1 });
 
       res.status(200).json({
         posts,
