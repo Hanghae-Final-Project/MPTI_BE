@@ -35,19 +35,15 @@ router.post('/chat', authMiddleware, async (req, res) => {
         .status(400)
         .send({ errorMessage: '이미 존재하는 방입니다', Room: existingRoom });
     } else if (receiver.blockedUsers.includes(senderUserNum) === true) {
-      res
-        .status(400)
-        .send({
-          message: '상대방이 당신을 차단해서 대화를 할 수 없습니다.',
-          blocked: 'blocked',
-        });
+      res.status(400).send({
+        message: '상대방이 당신을 차단해서 대화를 할 수 없습니다.',
+        blocked: 'blocked',
+      });
     } else if (senderBlockedUsers.includes(receiverUserNum) === true) {
-      res
-        .status(400)
-        .send({
-          message: '당신이 상대방을 차단해서 대화를 할 수 없습니다.',
-          blocked: 'blocked',
-        });
+      res.status(400).send({
+        message: '당신이 상대방을 차단해서 대화를 할 수 없습니다.',
+        blocked: 'blocked',
+      });
     } else {
       const createdRoom = await Room.create({
         members,
@@ -94,9 +90,10 @@ router.get('/chatList', authMiddleware, async (req, res) => {
         userNum = chatList.leftUserNum;
         introduction = chatList.leftUserIntroduction;
         userInfo.push({ userImage, nickname, mbti, userNum, introduction });
+        userNum = res.locals.user.userNum;
       } else if (
         chatList.members.length === 2 &&
-        userNum === chatList.members[1]
+        userNum == chatList.members[1]
       ) {
         userImage = chatList.receiverUserImage;
         nickname = chatList.receiverNickname;
@@ -104,6 +101,7 @@ router.get('/chatList', authMiddleware, async (req, res) => {
         userNum = chatList.receiverUserNum;
         introduction = chatList.receiverIntroduction;
         userInfo.push({ userImage, nickname, mbti, userNum, introduction });
+        userNum = res.locals.user.userNum;
       } else {
         userImage = chatList.senderUserImage;
         nickname = chatList.senderNickname;
@@ -111,6 +109,7 @@ router.get('/chatList', authMiddleware, async (req, res) => {
         userNum = chatList.senderUserNum;
         introduction = chatList.senderIntroduction;
         userInfo.push({ userImage, nickname, mbti, userNum, introduction });
+        userNum = res.locals.user.userNum;
       }
     });
 

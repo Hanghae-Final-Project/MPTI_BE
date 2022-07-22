@@ -19,7 +19,7 @@ const RoomSchema = new mongoose.Schema({
     type: String,
   },
   senderUserNum: {
-    type: String,
+    type: Number,
   },
   senderIntroduction: {
     type: String,
@@ -34,7 +34,7 @@ const RoomSchema = new mongoose.Schema({
     type: String,
   },
   receiverUserNum: {
-    type: String,
+    type: Number,
   },
   receiverIntroduction: {
     type: String,
@@ -49,7 +49,7 @@ const RoomSchema = new mongoose.Schema({
     type: String,
   },
   leftUserNum: {
-    type: String,
+    type: Number,
   },
   leftUserIntroduction: {
     type: String,
