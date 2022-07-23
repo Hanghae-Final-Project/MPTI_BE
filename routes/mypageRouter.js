@@ -114,9 +114,13 @@ router.put(
 );
 
 // MBTI 성격 별 검색 기능: 사용자 인증
-router.get('/userList', authMiddleware, async (req, res) => {
-  const userList = await User.find();
-  res.status(200).send({ userList });
-});
+router.get(
+  '/userList',
+  //  authMiddleware,
+  async (req, res) => {
+    const userList = await User.find();
+    res.status(200).send({ userList });
+  }
+);
 
 module.exports = router;
