@@ -17,6 +17,9 @@ const MessageSchema = new mongoose.Schema({
   userImage: {
     type: Array,
   },
+  profileImages: {
+    type: Array,
+  },
 });
 
 module.exports = mongoose.model('Message', MessageSchema);

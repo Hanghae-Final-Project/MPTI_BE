@@ -173,7 +173,7 @@ router.post('/message/:roomId', authMiddleware, async (req, res) => {
   try {
     const { roomId } = req.params;
     const { content } = req.body;
-    const { userNum, userImage } = res.locals.user;
+    const { userNum, userImage, profileImages } = res.locals.user;
 
     const now = new Date();
     const date = now.toLocaleDateString('ko-KR');
@@ -202,6 +202,7 @@ router.post('/message/:roomId', authMiddleware, async (req, res) => {
       content,
       userNum,
       userImage,
+      profileImages,
       messageTime,
     });
     await Room.updateOne(
