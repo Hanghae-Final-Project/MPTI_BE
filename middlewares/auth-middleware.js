@@ -3,11 +3,11 @@ const User = require('../schemas/usersSchema');
 require('dotenv').config();
 
 module.exports = (req, res, next) => {
-  console.log(req.headers);
+  // console.log(req.headers);
   const { authorization } = req.headers;
 
   const [tokenType, tokenValue] = (authorization || '').split(' ');
-  console.log(authorization);
+  // console.log(authorization);
   if (!tokenValue || tokenType !== 'Bearer') {
     return res.status(401).send({
       errorMessage: '로그인 후 이용 가능합니다.',
