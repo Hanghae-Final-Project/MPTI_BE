@@ -53,6 +53,12 @@ const UserSchema = new mongoose.Schema({
   snsId: {
     type: String,
   },
+  loggedin: {
+    type: String,
+  },
+  blockedUsers: {
+    type: Array,
+  },
 });
 
 UserSchema.virtual('userId').get(function () {

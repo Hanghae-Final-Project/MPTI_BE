@@ -42,14 +42,17 @@ router.get(
   async (req, res) => {
     try {
       const { postId } = req.params;
+      const existLikes = await Post.findOne({ postId: postId });
+      const countLikes = existLikes.countLikes;
       const posts = await Post.findOne({ postId: parseInt(postId) });
       const existingComment = await Comment.find({
         postId: parseInt(postId),
-      }).sort({ postId: -1 });
+      }).sort({ commentId: 1 });
 
       res.status(200).json({
         posts,
         existingComment,
+        countLikes,
         message: '상세페이지 보기 성공',
       });
     } catch (err) {
@@ -68,7 +71,7 @@ router.post(
   async (req, res) => {
     try {
       console.log(res.locals.user);
-      const { userId, nickname, userImage } = res.locals.user;
+      const { userId, nickname, userImage, userNum } = res.locals.user;
       const { postCategory, postContent } = req.body;
 
       const imageReq = req.files;
@@ -81,7 +84,19 @@ router.post(
       }
       const postImage = locationPusher();
 
-      const createdAt = new Date().toLocaleDateString('ko-KR');
+      const now = new Date();
+      const date = now.toLocaleDateString('ko-KR');
+      const year = Number(date.split('.')[0]);
+      let month = Number(date.split('.')[1].trim());
+      if (month < 10) {
+        month = '0' + month;
+      }
+      let day = Number(date.split('.')[2].trim());
+      if (day < 10) {
+        day = '0' + day;
+      }
+      const createdAt = `${year}. ${month}. ${day}`;
+      // const createdAt = new Date().toLocaleDateString('ko-KR');
 
       let countLikes = 0;
 
@@ -91,6 +106,7 @@ router.post(
         createdAt,
         postContent,
         userId,
+        userNum,
         countLikes,
         nickname,
         userImage,
@@ -171,7 +187,7 @@ router.delete('/:postId', authMiddleware, async (req, res) => {
 
 // 좋아요 추가 기능
 router.post('/likes/:postId', authMiddleware, async (req, res) => {
-  const { userId } = res.locals.user;
+  const { userId, userNum } = res.locals.user;
   const { postId } = req.params;
   const isLike = await Like.findOne({ userId: userId, postId });
   if (isLike) {
@@ -179,7 +195,7 @@ router.post('/likes/:postId', authMiddleware, async (req, res) => {
       .status(400)
       .json({ errorMessage: '이미 좋아요 되어있는 상태입니다.' });
   } else {
-    await Like.create({ userId, postId });
+    await Like.create({ userId, postId, userNum });
     const existLikes = await Post.findOne({ postId: postId });
     if (existLikes) {
       const countLikes = existLikes.countLikes + 1;
@@ -218,7 +234,7 @@ router.get(
     const existLikeUsers = await Like.find({ postId });
     const existLikes = await Post.findOne({ postId: postId });
     const countLikes = existLikes.countLikes;
-    const likeUsers = existLikeUsers.map((item) => item.userId);
+    const likeUsers = existLikeUsers.map((item) => item.userNum);
     res.json({ likeUsers, countLikes });
   }
 );
