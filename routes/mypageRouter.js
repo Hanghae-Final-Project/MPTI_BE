@@ -1,6 +1,10 @@
 const router = require('express').Router();
 require('dotenv').config();
 const User = require('../schemas/usersSchema');
+const Post = require('../schemas/postsSchema');
+const Comment = require('../schemas/commentsSchema');
+const Room = require('../schemas/roomsSchema');
+const Message = require('../schemas/messagesSchema');
 const authMiddleware = require('../middlewares/auth-middleware');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
@@ -54,7 +58,7 @@ router.put(
   '/mypage/:userNum',
   authMiddleware,
   upload.array('userImage'),
-  async (req, res) => {
+  async (req, res, next) => {
     const { userNum } = req.params;
     const { userId } = res.locals.user;
     const { nickname } = req.body;
@@ -71,13 +75,58 @@ router.put(
 
     const existingUser = await User.findOne({ userNum: parseInt(userNum) });
 
+    const chatList = await Room.find({ members: parseInt(userNum) });
+
     if (userId !== existingUser.userId) {
       res.status(400).json({ success: false, message: '내 정보가 아닙니다' });
     } else {
+      // 유저정보 수정
       await User.updateOne(
         { userNum: parseInt(userNum) },
         { $set: { nickname, userImage } }
       );
+      // 유저정보 들어간 모든 곳 수정(게시물, 댓글, 채팅방, 메세지)
+      await Post.updateMany(
+        { userNum: parseInt(userNum) },
+        { $set: { nickname, userImage } }
+      );
+      await Comment.updateMany(
+        { userNum: parseInt(userNum) },
+        { $set: { nickname, userImage } }
+      );
+      await Message.updateMany(
+        { userNum: parseInt(userNum) },
+        { $set: { userImage } }
+      );
+      await chatList.forEach((chatList) => {
+        if (parseInt(userNum) === chatList.leftUserNum) {
+          Room.updateMany(
+            { leftUserNum: parseInt(userNum) },
+            { $set: { leftUserNickname: nickname, leftUserImage: userImage } }
+          ).then((a) => {
+            next();
+          });
+        } else if (parseInt(userNum) === chatList.receiverUserNum) {
+          Room.updateMany(
+            { receiverUserNum: parseInt(userNum) },
+            {
+              $set: {
+                receiverNickname: nickname,
+                receiverUserImage: userImage,
+              },
+            }
+          ).then((a) => {
+            next();
+          });
+        } else if (parseInt(userNum) === chatList.senderUserNum) {
+          Room.updateMany(
+            { senderUserNum: parseInt(userNum) },
+            { $set: { senderNickname: nickname, senderUserImage: userImage } }
+          ).then((a) => {
+            next();
+          });
+        }
+      });
       res.status(200).json({ success: true, message: '내 정보 수정 성공' });
     }
   }
@@ -88,7 +137,7 @@ router.put(
   '/mypage/profile/:userNum',
   authMiddleware,
   // upload.array('profileImages'),
-  async (req, res) => {
+  async (req, res, next) => {
     const { userNum } = req.params;
     const { userId } = res.locals.user;
     const { introduction, profileImages } = req.body;
@@ -103,9 +152,9 @@ router.put(
     // }
     // const profileImages = locationPusher();
 
-    console.log(profileImages);
-
     const existingUser = await User.findOne({ userNum: parseInt(userNum) });
+
+    const chatList = await Room.find({ members: parseInt(userNum) });
 
     if (userId !== existingUser.userId) {
       res.status(400).json({ success: false, message: '내 프로필이 아닙니다' });
@@ -114,6 +163,36 @@ router.put(
         { userNum: parseInt(userNum) },
         { $set: { profileImages, introduction } }
       );
+      await Message.updateMany(
+        { userNum: parseInt(userNum) },
+        { $set: { profileImages } }
+      );
+      await chatList.forEach((chatList) => {
+        if (parseInt(userNum) === chatList.leftUserNum) {
+          Room.updateMany(
+            {
+              leftUserNum: parseInt(userNum),
+            },
+            { $set: { leftUserIntroduction: introduction } }
+          ).then((a) => {
+            next();
+          });
+        } else if (parseInt(userNum) === chatList.receiverUserNum) {
+          Room.updateMany(
+            { receiverUserNum: parseInt(userNum) },
+            { $set: { receiverIntroduction: introduction } }
+          ).then((a) => {
+            next();
+          });
+        } else if (parseInt(userNum) === chatList.senderUserNum) {
+          Room.updateMany(
+            { senderUserNum: parseInt(userNum) },
+            { $set: { senderIntroduction: introduction } }
+          ).then((a) => {
+            next();
+          });
+        }
+      });
       res.status(200).json({ success: true, message: '프로필 수정 성공' });
     }
   }
