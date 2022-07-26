@@ -37,11 +37,17 @@ router.post(
 );
 
 // 마이페이지 조회: 사용자 인증
-router.get('/mypage/:userNum', authMiddleware, async (req, res) => {
-  const { userNum } = req.params;
-  const existingUser = await User.findOne({ userNum: parseInt(userNum) });
-  res.status(200).json({ existingUser, message: '마이 페이지 불러오기 성공' });
-});
+router.get(
+  '/mypage/:userNum',
+  //  authMiddleware,
+  async (req, res) => {
+    const { userNum } = req.params;
+    const existingUser = await User.findOne({ userNum: parseInt(userNum) });
+    res
+      .status(200)
+      .json({ existingUser, message: '마이 페이지 불러오기 성공' });
+  }
+);
 
 // 마이페이지 수정: 사용자 인증
 router.put(
