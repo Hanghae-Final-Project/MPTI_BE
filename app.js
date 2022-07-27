@@ -8,6 +8,7 @@ const kakaoRouter = require('./routes/usersRouter');
 const passport = require('passport');
 const passportConfig = require('./passport');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 app.use(cors({ origin: true, credentials: true }));
 app.use(helmet({ contentSecurityPolicy: false }));
 
