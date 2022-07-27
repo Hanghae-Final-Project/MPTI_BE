@@ -21,11 +21,11 @@ module.exports = () => {
             done(null, exUser);
           } else {
             const newUser = await User.create({
-              email: profile._json && profile._json.kakao_account_email,
               name: profile.displayName,
               snsId: profile.id,
               provider: 'kakao',
             });
+            console.log('이메일')
             done(null, newUser);
           }
         } catch (error) {
