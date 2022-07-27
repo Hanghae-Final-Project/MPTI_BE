@@ -194,6 +194,7 @@ router.post('/login', async (req, res) => {
     );
     res.status(200).send({
       token,
+
       user: {
         userId: user.userId,
         nickname: user.nickname,

@@ -8,6 +8,7 @@ const kakaoRouter = require('./routes/usersRouter');
 const passport = require('passport');
 const passportConfig = require('./passport');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 app.use(cors({ origin: true, credentials: true }));
 app.use(helmet({ contentSecurityPolicy: false }));
 
@@ -22,13 +23,23 @@ app.use('/api', require('./routes/mypageRouter.js'));
 app.use('/api', require('./routes/chatsRouter'));
 app.use('/api', require('./routes/blocksRouter'));
 app.use('/api/kakao', kakaoRouter);
-app.use(
-  session({
-    secret: 'mpti',
-    resave: true,
-    saveUninitialized: true,
-  })
-);
+// app.use(
+//   session({
+//     secret: 'mpti',
+//     resave: true,
+//     saveUninitialized: true,
+//   })
+// );
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(session({
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.COOKIE_SECRET,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+  },
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -36,6 +47,7 @@ app.use((req, res, next) => {
   console.log('Request URL:', req.originalUrl, ' - ', new Date());
   next();
 });
+
 
 app.get('/', (req, res) => {
   res.send('hello world');
