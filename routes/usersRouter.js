@@ -401,15 +401,39 @@ router.get('/suggest', authMiddleware, async (req, res) => {
 //소셜 로그인 카카오 구현
 router.get('/kakao', passport.authenticate('kakao'));
 
-router.get(
-  '/kakao/callback',
-  passport.authenticate('kakao', {
-    failureRedirect: '/',
-  }),
-  (req, res) => {
-    res.redirect('/');
-  }
-);
+const kakaoCallback = (req, res, next) => {
+  passport.authenticate(
+      'kakao',
+      { failureRedirect: '/' },
+      (err, user, info) => {
+          if (err) return next(err)
+          console.log('콜백~~~')
+          const userInfo = user
+          const { userId } = user
+          const token = jwt.sign({ userId }, process.env.JWT_SECRET_KEY)
+
+          result = {
+              token,
+              userInfo,
+          }
+          console.log('카카오 콜백 함수 결과', result)
+          res.send({ user: result })
+      }
+  )(req, res, next)
+}
+
+router.get('/kakao/callback', kakaoCallback)
+
+
+// router.get(
+//   '/kakao/callback',
+//   passport.authenticate('kakao', {
+//     failureRedirect: '/',
+//   }),
+//   (req, res) => {
+//     res.redirect('/');
+//   }
+// );
 
 // <---유저정보조회(토큰 내용 확인) API-->
 router.get('/auth', authMiddleware, async (req, res) => {

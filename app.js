@@ -27,17 +27,19 @@ app.use('/api', require('./routes/blocksRouter'));
 //     saveUninitialized: true,
 //   })
 // );
-app.use(cookieParser(process.env.COOKIE_SECRET));
+
+passportConfig();
+
+app.use(cookieParser());
 app.use(session({
   resave: false,
   saveUninitialized: false,
-  secret: process.env.COOKIE_SECRET,
+  secret: process.env["COOKIE_SECRET"],
   cookie: {
     httpOnly: true,
     secure: false,
   },
 }));
-passportConfig();
 
 app.use(passport.initialize());
 app.use(passport.session());
