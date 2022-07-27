@@ -16,5 +16,5 @@ module.exports = () => {
          .catch(err => done(err));
    }); 
  
-   kakao(); // 구글 전략 등록
+   kakao(); 
 };
