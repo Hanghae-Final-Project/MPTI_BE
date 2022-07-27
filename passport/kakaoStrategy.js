@@ -9,7 +9,7 @@ module.exports = () => {
     new KakaoStrategy(
       {
         clientID: process.env.KAKAO_ID,
-        callbackURL: '/oauth/api/kakao/callback',
+        callbackURL: '/api/kakao/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
         console.log('kakao profile', profile, accessToken);
@@ -25,7 +25,6 @@ module.exports = () => {
               snsId: profile.id,
               provider: 'kakao',
             });
-            console.log('이메일')
             done(null, newUser);
           }
         } catch (error) {
