@@ -7,7 +7,7 @@ const connect = require('./schemas');
 const passport = require('passport');
 const passportConfig = require('./passport');
 const session = require('express-session');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 app.use(cors({ origin: true, credentials: true }));
 app.use(helmet({ contentSecurityPolicy: false }));
 
@@ -30,15 +30,15 @@ app.use('/api', require('./routes/blocksRouter'));
 
 passportConfig();
 
-app.use(cookieParser());
+// app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
   resave: false,
   saveUninitialized: false,
-  secret: process.env["COOKIE_SECRET"],
-  cookie: {
-    httpOnly: true,
-    secure: false,
-  },
+  secret: process.env.COOKIE_SECRET,
+  // cookie: {
+  //   httpOnly: true,
+  //   secure: false,
+  // },
 }));
 
 app.use(passport.initialize());
