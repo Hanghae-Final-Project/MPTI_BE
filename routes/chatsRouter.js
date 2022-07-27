@@ -246,4 +246,11 @@ router.get(
   }
 );
 
+router.get('/messages/:roomId', async (req, res) => {
+  const { roomId } = req.params;
+  const messages = await Message.find({ roomId: parseInt(roomId) });
+
+  res.status(200).send({ messages });
+});
+
 module.exports = router;
