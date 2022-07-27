@@ -13,7 +13,6 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(helmet({ contentSecurityPolicy: false }));
 
 connect();
-passportConfig();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use('/api/comments', require('./routes/commentsRouter.js'));
@@ -30,16 +29,18 @@ app.use('/api/kakao', kakaoRouter);
 //     saveUninitialized: true,
 //   })
 // );
-app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(session({
-  resave: false,
-  saveUninitialized: false,
-  // secret: process.env.COOKIE_SECRET,
-  cookie: {
-    httpOnly: true,
-    secure: false,
-  },
-}));
+// app.use(cookieParser(process.env.COOKIE_SECRET));
+// app.use(session({
+//   resave: false,
+//   saveUninitialized: false,
+//   // secret: process.env.COOKIE_SECRET,
+//   cookie: {
+//     httpOnly: true,
+//     secure: false,
+//   },
+// }));
+passportConfig();
+
 app.use(passport.initialize());
 app.use(passport.session());
 
