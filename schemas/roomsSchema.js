@@ -25,7 +25,7 @@ const RoomSchema = new mongoose.Schema({
     type: String,
   },
   senderProfileImages: {
-    type: String,
+    type: Array,
   },
   senderBirthday: {
     type: String,
@@ -46,7 +46,7 @@ const RoomSchema = new mongoose.Schema({
     type: String,
   },
   receiverProfileImages: {
-    type: String,
+    type: Array,
   },
   receiverBirthday: {
     type: String,
@@ -67,7 +67,7 @@ const RoomSchema = new mongoose.Schema({
     type: String,
   },
   leftUserProfileImages: {
-    type: String,
+    type: Array,
   },
   leftUserBirthday: {
     type: String,
