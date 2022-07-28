@@ -25,7 +25,7 @@ app.use('/api', require('./routes/chatsRouter'));
 app.use('/api', require('./routes/blocksRouter'));
 app.use('/api/kakao', require('./routes/kakaosRouter'));
 
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cookieParser());
 app.use(session({
   resave: false,
   saveUninitialized: false,
