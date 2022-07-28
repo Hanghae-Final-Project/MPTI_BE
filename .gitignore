@@ -1,2 +1,4 @@
 node_modules
 .env
+loadtest.json
+test.csv
