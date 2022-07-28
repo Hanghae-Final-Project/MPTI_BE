@@ -23,7 +23,7 @@ app.use('/api', require('./routes/usersRouter'));
 app.use('/api', require('./routes/mypageRouter.js'));
 app.use('/api', require('./routes/chatsRouter'));
 app.use('/api', require('./routes/blocksRouter'));
-app.use('/api/kakao', requrie('./routes/kakaosRouter'));
+app.use('/api/kakao', require('./routes/kakaosRouter'));
 
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
