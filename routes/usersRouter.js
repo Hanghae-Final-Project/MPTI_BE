@@ -402,7 +402,7 @@ router.get('/suggest', authMiddleware, async (req, res) => {
 router.get('/kakao', passport.authenticate('kakao'));
 
 router.get(
-  '/kakao/callback',
+  '/oauth/kakao/callback',
   passport.authenticate('kakao', {
     failureRedirect: '/',
   }),
