@@ -14,17 +14,11 @@ router.get(
   }),
   (req, res) => {
     res.redirect('/');
-  }
+  },
+ {headers: {
+    "Access-Control-Allow-Origin": 'http://localhost:3000'
+}},
 );
-exports.handler = async (event) => {
-  const response = {
-      statusCode: 200,
-      headers: {
-          "Access-Control-Allow-Origin": 'http://localhost:3000',
-      },
-      body: JSON.stringify('Hello from Lambda!'),
-  };
-  return response;
-};
+
 
 module.exports = router;
