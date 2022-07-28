@@ -14,8 +14,11 @@ router.get(
   }),
   (req, res) => {
     res.redirect('/');
-    res.header('Access-Control-Allow-Origin', '*')
-  }
+  },
+ {headers: {
+    "Access-Control-Allow-Origin": 'http://localhost:3000'
+}},
 );
+
 
 module.exports = router;
