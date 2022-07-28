@@ -27,7 +27,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
   resave: false,
   saveUninitialized: false,
-  secret: process.env.COOKIE_SECRET,
+  secret: 'SECRET',
   store: MongoStore.create({ mongoUrl: process.env.DB_URL }), // session 저장 장소 (Mongoose를 이용하여 Mongodb로 설정)
   cookie: {
     httpOnly: true,
