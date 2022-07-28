@@ -10,7 +10,13 @@ const session = require('express-session');
 // const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const { createProxyMiddleware } = require('http-proxy-middleware');
-app.use(cors({ origin: true, credentials: true}));
+app.use(cors({ 
+  origin: '*', 
+  credentials: true,
+  // header: {
+  //   'Access-Control-Allow-origin' :  'http://localhost:3000'
+  // } 
+}));
 app.use(helmet({ contentSecurityPolicy: false }));
 
 
