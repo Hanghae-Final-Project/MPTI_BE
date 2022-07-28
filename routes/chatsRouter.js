@@ -12,6 +12,8 @@ router.post('/chat', authMiddleware, async (req, res) => {
     const senderNickname = res.locals.user.nickname;
     const senderMbti = res.locals.user.mbti;
     const senderIntroduction = res.locals.user.introduction;
+    const senderProfileImages = res.locals.user.profileImages;
+    const senderBirthday = res.locals.user.birthday;
 
     const senderBlockedUsers = res.locals.user.blockedUsers;
 
@@ -22,6 +24,8 @@ router.post('/chat', authMiddleware, async (req, res) => {
     const receiverNickname = receiver.nickname;
     const receiverMbti = receiver.mbti;
     const receiverIntroduction = receiver.introduction;
+    const receiverProfileImages = receiver.profileImages;
+    const receiverBirthday = receiver.birthday;
 
     const members = [receiverUserNum, senderUserNum];
     const reversMembers = [senderUserNum, receiverUserNum];
@@ -52,11 +56,15 @@ router.post('/chat', authMiddleware, async (req, res) => {
         senderMbti,
         senderUserNum,
         senderIntroduction,
+        senderProfileImages,
+        senderBirthday,
         receiverUserImage,
         receiverNickname,
         receiverMbti,
         receiverUserNum,
         receiverIntroduction,
+        receiverProfileImages,
+        receiverBirthday,
       });
       const roomId = createdRoom.roomId;
       res.status(200).send({
@@ -81,6 +89,8 @@ router.get('/chatList', authMiddleware, async (req, res) => {
     let nickname;
     let mbti;
     let introduction;
+    let profileImages;
+    let birthday;
     let userInfo = [];
     chatList.forEach((chatList) => {
       if (chatList.members.length === 1) {
@@ -89,7 +99,17 @@ router.get('/chatList', authMiddleware, async (req, res) => {
         mbti = chatList.leftUserMbti;
         userNum = chatList.leftUserNum;
         introduction = chatList.leftUserIntroduction;
-        userInfo.push({ userImage, nickname, mbti, userNum, introduction });
+        profileImages = chatList.leftUserProfileImages;
+        birthday = chatList.leftUserBirthday;
+        userInfo.push({
+          userImage,
+          nickname,
+          mbti,
+          userNum,
+          introduction,
+          profileImages,
+          birthday,
+        });
         userNum = res.locals.user.userNum;
       } else if (
         chatList.members.length === 2 &&
@@ -100,7 +120,17 @@ router.get('/chatList', authMiddleware, async (req, res) => {
         mbti = chatList.receiverMbti;
         userNum = chatList.receiverUserNum;
         introduction = chatList.receiverIntroduction;
-        userInfo.push({ userImage, nickname, mbti, userNum, introduction });
+        profileImages = chatList.receiverProfileImages;
+        birthday = chatList.receiverBirthday;
+        userInfo.push({
+          userImage,
+          nickname,
+          mbti,
+          userNum,
+          introduction,
+          profileImages,
+          birthday,
+        });
         userNum = res.locals.user.userNum;
       } else {
         userImage = chatList.senderUserImage;
@@ -108,7 +138,17 @@ router.get('/chatList', authMiddleware, async (req, res) => {
         mbti = chatList.senderMbti;
         userNum = chatList.senderUserNum;
         introduction = chatList.senderIntroduction;
-        userInfo.push({ userImage, nickname, mbti, userNum, introduction });
+        profileImages = chatList.senderProfileImages;
+        birthday = chatList.senderBirthday;
+        userInfo.push({
+          userImage,
+          nickname,
+          mbti,
+          userNum,
+          introduction,
+          profileImages,
+          birthday,
+        });
         userNum = res.locals.user.userNum;
       }
     });
@@ -157,6 +197,8 @@ router.put('/chat/:roomId', authMiddleware, async (req, res) => {
             leftUserMbti: leftUser.mbti,
             leftUserNum: leftUser.userNum,
             leftUserIntroduction: leftUser.introduction,
+            leftUserProfileImages: leftUser.profileImages,
+            leftUserBirthday: leftUser.birthday,
           },
         }
       );
@@ -233,9 +275,9 @@ router.get(
     });
 
     const { roomId } = req.params;
-    const messages = await Message.find({ roomId: parseInt(roomId) });
-    res.write('event: test\n');
-    res.write(`data: ${JSON.stringify(messages)}\n\n`);
+    // const messages = await Message.find({ roomId: parseInt(roomId) });
+    // res.write('event: test\n');
+    // res.write(`data: ${JSON.stringify(messages)}\n\n`);
 
     const pipeline = [{ $match: { 'fullDocument.roomId': parseInt(roomId) } }];
     const changeStream = Message.watch(pipeline);
@@ -245,5 +287,12 @@ router.get(
     });
   }
 );
+
+router.get('/messages/:roomId', async (req, res) => {
+  const { roomId } = req.params;
+  const messages = await Message.find({ roomId: parseInt(roomId) });
+
+  res.status(200).send({ messages });
+});
 
 module.exports = router;

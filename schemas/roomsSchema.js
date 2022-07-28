@@ -24,6 +24,12 @@ const RoomSchema = new mongoose.Schema({
   senderIntroduction: {
     type: String,
   },
+  senderProfileImages: {
+    type: Array,
+  },
+  senderBirthday: {
+    type: String,
+  },
   receiverUserImage: {
     type: Array,
   },
@@ -39,6 +45,12 @@ const RoomSchema = new mongoose.Schema({
   receiverIntroduction: {
     type: String,
   },
+  receiverProfileImages: {
+    type: Array,
+  },
+  receiverBirthday: {
+    type: String,
+  },
   leftUserImage: {
     type: Array,
   },
@@ -52,6 +64,12 @@ const RoomSchema = new mongoose.Schema({
     type: Number,
   },
   leftUserIntroduction: {
+    type: String,
+  },
+  leftUserProfileImages: {
+    type: Array,
+  },
+  leftUserBirthday: {
     type: String,
   },
   recentMessage: {

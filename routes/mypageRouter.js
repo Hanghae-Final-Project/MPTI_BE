@@ -173,21 +173,36 @@ router.put(
             {
               leftUserNum: parseInt(userNum),
             },
-            { $set: { leftUserIntroduction: introduction } }
+            {
+              $set: {
+                leftUserIntroduction: introduction,
+                leftUserProfileImages: profileImages,
+              },
+            }
           ).then((a) => {
             next();
           });
         } else if (parseInt(userNum) === chatList.receiverUserNum) {
           Room.updateMany(
             { receiverUserNum: parseInt(userNum) },
-            { $set: { receiverIntroduction: introduction } }
+            {
+              $set: {
+                receiverIntroduction: introduction,
+                receiverProfileImages: profileImages,
+              },
+            }
           ).then((a) => {
             next();
           });
         } else if (parseInt(userNum) === chatList.senderUserNum) {
           Room.updateMany(
             { senderUserNum: parseInt(userNum) },
-            { $set: { senderIntroduction: introduction } }
+            {
+              $set: {
+                senderIntroduction: introduction,
+                senderProfileImages: profileImages,
+              },
+            }
           ).then((a) => {
             next();
           });
