@@ -7,7 +7,7 @@ const connect = require('./schemas');
 const passport = require('passport');
 const passportConfig = require('./passport');
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
+// const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 app.use(cors({ origin: true, credentials: true }));
 app.use(helmet({ contentSecurityPolicy: false }));
@@ -27,8 +27,8 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
   resave: false,
   saveUninitialized: false,
-  secret: process.env.COOKIE_SECRET,
-  store: MongoStore.create({ mongoUrl: process.env.DB_URL }), // session 저장 장소 (Mongoose를 이용하여 Mongodb로 설정)
+  secret: 'SECRET',
+  // store: MongoStore.create({ mongoUrl: process.env.DB_URL }), // session 저장 장소 (Mongoose를 이용하여 Mongodb로 설정)
   cookie: {
     httpOnly: true,
     secure: false,
