@@ -9,7 +9,7 @@ const passportConfig = require('./passport');
 const session = require('express-session');
 // const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(helmet({ contentSecurityPolicy: false }));
 
 
