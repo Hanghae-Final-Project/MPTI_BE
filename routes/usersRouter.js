@@ -399,10 +399,10 @@ router.get('/suggest', authMiddleware, async (req, res) => {
 });
 
 //소셜 로그인 카카오 구현
-router.get('/oauth/kakao', passport.authenticate('kakao'));
+router.get('/kakao', passport.authenticate('kakao'));
 
 router.get(
-  '/oauth/kakao/callback',
+  '/kakao/callback',
   passport.authenticate('kakao', {
     failureRedirect: '/',
   }),
