@@ -9,7 +9,7 @@ module.exports = () => {
     new KakaoStrategy(
       {
         clientID: process.env.KAKAO_ID,
-        callbackURL: '/oauth/api/kakao/callback',
+        callbackURL: 'https://mptiserver.link/oauth/api/kakao/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
         console.log('kakao profile', profile, accessToken);
