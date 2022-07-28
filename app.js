@@ -9,7 +9,8 @@ const passportConfig = require('./passport');
 const session = require('express-session');
 // const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
-app.use(cors({ origin: true, credentials: true }));
+const { createProxyMiddleware } = require('http-proxy-middleware');
+app.use(cors({ origin: true, credentials: true}));
 app.use(helmet({ contentSecurityPolicy: false }));
 
 
@@ -24,7 +25,7 @@ app.use('/api', require('./routes/mypageRouter.js'));
 app.use('/api', require('./routes/chatsRouter'));
 app.use('/api', require('./routes/blocksRouter'));
 app.use('/api/kakao', require('./routes/kakaosRouter'));
-
+app.use('/api', createProxyMiddleware({ target: 'http://localhost:3000', changeOrigin: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
   resave: false,
