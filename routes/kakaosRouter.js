@@ -7,7 +7,7 @@ const KAKAO_CLIENT_id = process.env.KAKAO_ID
 const KAKAO_REDIRECT_URL = 'https://mptiserver.link/api/kakao/callback'
 
 const router = express.Router();
-router.get('', (req, res, next) => {
+router.get('/', (req, res, next) => {
   const code = req.query.code;
   try{
       axios.post(
