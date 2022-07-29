@@ -31,7 +31,7 @@ app.use('/api', require('./routes/mypageRouter.js'));
 app.use('/api', require('./routes/chatsRouter'));
 app.use('/api', require('./routes/blocksRouter'));
 app.use('/api/kakao', require('./routes/kakaosRouter'));
-app.use('/api', createProxyMiddleware({ target: 'https://localhost:3000/api/kakao/callback', changeOrigin: true }));
+app.use('/api', createProxyMiddleware({ target: 'https://localhost:3000', changeOrigin: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
   resave: false,
