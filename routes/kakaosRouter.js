@@ -9,10 +9,10 @@ const KAKAO_REDIRECT_URL = 'https://mptiserver.link/api/kakao/callback'
 
 const router = express.Router();
 
-router.post('/', (req, res, next) => {
-  let data = req.data;
-  console.log(data)
-  res.send(data)
+router.post('/', (req, res) => { 
+  const access_token = req.query.access_token;
+  res.send(access_token);
+  console.log(access_token);
 });
 
 //소셜 로그인 카카오 구현
