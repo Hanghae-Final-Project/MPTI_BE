@@ -52,6 +52,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/api', (req,res) => {
+  res.header('Access-Control-Allow-Origin', 'https://localhost:3000');
+  res.send(data);
+});
+
 
 app.get('/', (req, res) => {
   res.send('hello world');
