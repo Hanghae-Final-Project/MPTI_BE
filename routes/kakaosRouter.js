@@ -10,7 +10,7 @@ const KAKAO_REDIRECT_URL = 'https://mptiserver.link/api/kakao/callback'
 const router = express.Router();
 
 router.post('/', (req, res, next) => {
-  let data = req.params.data;
+  let data = req.data;
   console.log(data)
   res.send(data)
 });
