@@ -284,6 +284,7 @@ router.get(
     changeStream.on('change', (result) => {
       res.write('event: test\n');
       res.write(`data: ${JSON.stringify([result.fullDocument])}\n\n`);
+      console.log(result.fullDocument);
     });
   }
 );
