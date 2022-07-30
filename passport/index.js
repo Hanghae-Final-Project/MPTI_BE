@@ -1,3 +1,4 @@
+require('dotenv').config();
 const passport = require('passport');
 const kakao = require('./kakaoStrategy'); // 카카오서버로 로그인할때
  
@@ -15,6 +16,7 @@ module.exports = () => {
          .then(user => done(null, user))
          .catch(err => done(err));
    }); 
- 
-   kakao(); // 구글 전략 등록
+
+
+   kakao(); 
 };

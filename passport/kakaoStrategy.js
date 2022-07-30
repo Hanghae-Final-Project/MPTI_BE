@@ -1,17 +1,18 @@
+require('dotenv').config()
 const passport = require('passport');
 const KakaoStrategy = require('passport-kakao').Strategy;
-
 const User = require('../schemas/usersSchema');
+
 
 module.exports = () => {
   passport.use(
     new KakaoStrategy(
       {
         clientID: process.env.KAKAO_ID,
-        callbackURL: '/api/kakao/callback',
+        callbackURL: 'https://localhost:3000/api/kakao/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
-        console.log('kakao profile', profile);
+        console.log('kakao profile', profile, accessToken);
         try {
           const exUser = await User.findOne({
             where: { snsId: profile.id, provider: 'kakao' },
@@ -20,7 +21,6 @@ module.exports = () => {
             done(null, exUser);
           } else {
             const newUser = await User.create({
-              email: profile._json && profile._json.kakao_account_email,
               name: profile.displayName,
               snsId: profile.id,
               provider: 'kakao',
