@@ -218,7 +218,7 @@ router.get(
   '/userList',
   //  authMiddleware,
   async (req, res) => {
-    const userList = await User.find();
+    const userList = await User.find().sort({ userNum: -1 });
     res.status(200).send({ userList });
   }
 );
