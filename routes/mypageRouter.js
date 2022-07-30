@@ -57,21 +57,21 @@ router.get(
 router.put(
   '/mypage/:userNum',
   authMiddleware,
-  upload.array('userImage'),
+  // upload.array('userImage'),
   async (req, res, next) => {
     const { userNum } = req.params;
     const { userId } = res.locals.user;
-    const { nickname } = req.body;
+    const { nickname, userImage } = req.body;
 
-    const imageReq = req.files;
-    let imageArray = [];
-    function locationPusher() {
-      for (let i = 0; i < imageReq.length; i++) {
-        imageArray.push(imageReq[i].location);
-      }
-      return imageArray;
-    }
-    const userImage = locationPusher();
+    // const imageReq = req.files;
+    // let imageArray = [];
+    // function locationPusher() {
+    //   for (let i = 0; i < imageReq.length; i++) {
+    //     imageArray.push(imageReq[i].location);
+    //   }
+    //   return imageArray;
+    // }
+    // const userImage = locationPusher();
 
     const existingUser = await User.findOne({ userNum: parseInt(userNum) });
 
