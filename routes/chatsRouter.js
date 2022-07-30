@@ -275,18 +275,15 @@ router.get(
     });
 
     const { roomId } = req.params;
-    const messages = await Message.find({ roomId: parseInt(roomId) });
-    res.write('event: test\n');
-    res.write(`data: ${JSON.stringify(messages)}\n\n`);
+    // const messages = await Message.find({ roomId: parseInt(roomId) });
+    // res.write('event: test\n');
+    // res.write(`data: ${JSON.stringify(messages)}\n\n`);
 
     const pipeline = [{ $match: { 'fullDocument.roomId': parseInt(roomId) } }];
     const changeStream = Message.watch(pipeline);
-    console.log(pipeline);
-    console.log(changeStream);
     changeStream.on('change', (result) => {
       res.write('event: test\n');
       res.write(`data: ${JSON.stringify([result.fullDocument])}\n\n`);
-      console.log(result.fullDocument);
     });
   }
 );
