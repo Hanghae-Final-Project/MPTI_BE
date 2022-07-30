@@ -127,21 +127,21 @@ router.post(
 router.put(
   '/:postId',
   authMiddleware,
-  upload.array('postImage'),
+  // upload.array('postImage'),
   async (req, res) => {
     const { postId } = req.params;
     const { userId } = res.locals.user;
-    const { postCategory, postContent } = req.body;
+    const { postCategory, postContent, postImage } = req.body;
 
-    const imageReq = req.files;
-    let imageArray = [];
-    function locationPusher() {
-      for (let i = 0; i < imageReq.length; i++) {
-        imageArray.push(imageReq[i].location);
-      }
-      return imageArray;
-    }
-    const postImage = locationPusher();
+    // const imageReq = req.files;
+    // let imageArray = [];
+    // function locationPusher() {
+    //   for (let i = 0; i < imageReq.length; i++) {
+    //     imageArray.push(imageReq[i].location);
+    //   }
+    //   return imageArray;
+    // }
+    // const postImage = locationPusher();
 
     const existingPost = await Post.findOne({ postId: parseInt(postId) });
 
