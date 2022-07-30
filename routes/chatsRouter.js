@@ -281,6 +281,8 @@ router.get(
 
     const pipeline = [{ $match: { 'fullDocument.roomId': parseInt(roomId) } }];
     const changeStream = Message.watch(pipeline);
+    console.log(pipeline);
+    console.log(changeStream);
     changeStream.on('change', (result) => {
       res.write('event: test\n');
       res.write(`data: ${JSON.stringify([result.fullDocument])}\n\n`);
